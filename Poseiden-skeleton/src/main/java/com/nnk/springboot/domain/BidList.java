@@ -7,15 +7,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
 import java.sql.Date;
 import java.sql.Timestamp;
 
 @Entity
 @Getter
+@NoArgsConstructor
 @Setter
 @Table(name = "bidlist")
 public class BidList {
@@ -23,7 +25,7 @@ public class BidList {
     @Id
     @Column(name="BidListId")
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-	private Integer BidListId;
+	private Integer id;
     
     @Column(name="account")
    	private String account;
@@ -88,7 +90,7 @@ public class BidList {
     @Column(name="side")
 	private String side;
 
-	public BidList(String string, String string2, double d) {
+	public BidList(String Bil, String string2, double d) {
 		// TODO Auto-generated constructor stub
 	}
 

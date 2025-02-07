@@ -1,11 +1,10 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.BidList;
-import com.nnk.springboot.domain.User;
+import com.nnk.springboot.repositories.BidListRepository;
 import com.nnk.springboot.services.BidListService;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +15,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.validation.Valid;
-
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -31,6 +26,9 @@ public class BidListController {
 
     @Autowired
     private BidListService bidListService;
+    
+    @Autowired
+    private BidListRepository bidListRepository;
     
     public String getUser(@AuthenticationPrincipal UserDetails userDetails) {
         return "User Details: " + userDetails.getUsername();
@@ -41,18 +39,29 @@ public class BidListController {
     	String remoteUser = request.getRemoteUser();
         model.addAttribute("bidLists", bidListService.findAllBids());
         model.addAttribute("remoteUser", remoteUser);
-        return "bidList/list"; 
+        return "bidList/list";
     }
     
     @GetMapping("/bidList/add")
-    public String addBidForm(BidList bid) {
+    public String addBidForm(BidList bid, Model model) {
+    	model.addAttribute("bid", new BidList());
         return "bidList/add";
     }
 
     @PostMapping("/bidList/validate")
-    public String validate(@Valid BidList bid, BindingResult result, Model model) {
-        // TODO: check data valid and save to db, after saving return bid list
-        return "bidList/add";
+    public String validate(@jakarta.validation.Valid BidList bid, @AuthenticationPrincipal UserDetails userDetails, BindingResult result, Model model) {
+    	log.info("call to POST /bidList/validate with {}", bid.toString());
+    	log.info("result: {}", result);
+    	log.info("result: {}", result.toString());
+    	  // Si des erreurs de validation sont présentes, renvoyer la vue avec les erreurs
+        if (result.hasErrors()) {
+            return "bidList/add";  // Ou toute autre vue qui montre les erreurs de validation
+        }
+
+        List<BidList> bids = bidListService.saveBid(bid);
+        model.addAttribute("bidLists", bids);
+        return "bidList/list";  // Rediriger vers la liste si tout va bien
+
     }
 
     @GetMapping("/bidList/update/{id}")
@@ -62,7 +71,7 @@ public class BidListController {
     }
 
     @PostMapping("/bidList/update/{id}")
-    public String updateBid(@PathVariable("id") Integer id, @Valid BidList bidList,
+    public String updateBid(@PathVariable("id") Integer id, @jakarta.validation.Valid BidList bidList,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Bid and return list Bid
         return "redirect:/bidList/list";

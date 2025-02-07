@@ -4,12 +4,15 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 @Entity
 @Setter
 @Getter
+@NoArgsConstructor
+
 @Table(name = "trade")
 public class Trade {
 

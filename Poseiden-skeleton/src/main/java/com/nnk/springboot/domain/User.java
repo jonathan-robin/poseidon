@@ -1,7 +1,7 @@
 package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "users")

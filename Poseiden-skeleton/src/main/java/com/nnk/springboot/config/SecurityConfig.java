@@ -45,12 +45,14 @@ public class SecurityConfig{
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http.authorizeHttpRequests((requests) -> requests
+        http
+        		
+        		.authorizeHttpRequests((requests) -> requests
                 .requestMatchers( "/", "/login").permitAll()
                 .requestMatchers("/user/*").hasAuthority("ADMIN")
                 //Authentication request parameters
                 .anyRequest().authenticated()
-
+                
                 )
                 .formLogin((formLogin) -> formLogin
                         //.usernameParameter("user.username")
@@ -94,7 +96,7 @@ public class SecurityConfig{
      */
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.debug(true)
+        return (web) -> web
                 .ignoring()
                 .requestMatchers("/css/**");
     }

@@ -15,10 +15,23 @@ import lombok.extern.slf4j.Slf4j;
 public class BidListService {
 
 	@Autowired
-	private BidListRepository bidListRepo;
+	private BidListRepository bidListRepository;
 	
 	public List<BidList> findAllBids(){ 
-		return this.bidListRepo.findAll();
+		return this.bidListRepository.findAll();
+	}
+	
+	public List<BidList> saveBid(BidList bid){ 
+    	
+    	BidList newBid = new BidList(); 
+    	newBid.setAccount(bid.getAccount()); 
+    	newBid.setType(bid.getType()); 
+    	newBid.setBidQuantity(bid.getBidQuantity());
+    	
+    	log.info("Saving new Bid {}...", newBid);
+    	bidListRepository.save(newBid);
+    	
+    	return this.findAllBids();
 	}
 	
 	
