@@ -1,12 +1,30 @@
 package com.nnk.springboot.domain;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "rating")
 public class Rating {
-    // TODO: Map columns in data table RATING with corresponding java fields
+
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name="Id")
+	private Integer id;
+    
+    @Column(name="moodysRating")
+	private String moodysRating;
+    
+    @Column(name="sandPRating")
+	private String sandPRating;
+    
+    @Column(name="fitchRating")
+	private String fitchRating;
+
+    @Column(name="orderNumber")
+ 	private Integer orderNumber;
+
 }

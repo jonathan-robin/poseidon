@@ -1,6 +1,14 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.domain.User;
+import com.nnk.springboot.services.BidListService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -8,21 +16,34 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.validation.Valid;
 
 
 @Controller
+@Slf4j
 public class BidListController {
-    // TODO: Inject Bid service
 
-    @RequestMapping("/bidList/list")
-    public String home(Model model)
-    {
-        // TODO: call service find all bids to show to the view
-        return "bidList/list";
+    @Autowired
+    private BidListService bidListService;
+    
+    public String getUser(@AuthenticationPrincipal UserDetails userDetails) {
+        return "User Details: " + userDetails.getUsername();
     }
 
+    @RequestMapping("/bidList/list")
+    public String home(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
+    	String remoteUser = request.getRemoteUser();
+        model.addAttribute("bidLists", bidListService.findAllBids());
+        model.addAttribute("remoteUser", remoteUser);
+        return "bidList/list"; 
+    }
+    
     @GetMapping("/bidList/add")
     public String addBidForm(BidList bid) {
         return "bidList/add";
