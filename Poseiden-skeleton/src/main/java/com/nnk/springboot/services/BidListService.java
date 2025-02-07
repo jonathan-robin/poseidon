@@ -1,6 +1,7 @@
 package com.nnk.springboot.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,17 @@ public class BidListService {
     	bidListRepository.save(newBid);
     	
     	return this.findAllBids();
+	}
+	
+	public BidList findById(Integer id) throws Exception { 
+		Optional<BidList> bidList = bidListRepository.findById(id); 
+		
+		if (bidList.isPresent())
+			return bidList.get(); 
+		
+		else 
+			throw new Exception("can't retrieve Bid with id " + id);
+
 	}
 	
 	

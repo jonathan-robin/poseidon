@@ -51,8 +51,7 @@ public class BidListController {
     @PostMapping("/bidList/validate")
     public String validate(@jakarta.validation.Valid BidList bid, @AuthenticationPrincipal UserDetails userDetails, BindingResult result, Model model) {
     	log.info("call to POST /bidList/validate with {}", bid.toString());
-    	log.info("result: {}", result);
-    	log.info("result: {}", result.toString());
+
     	  // Si des erreurs de validation sont présentes, renvoyer la vue avec les erreurs
         if (result.hasErrors()) {
             return "bidList/add";  // Ou toute autre vue qui montre les erreurs de validation
@@ -67,7 +66,17 @@ public class BidListController {
     @GetMapping("/bidList/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         // TODO: get Bid by Id and to model then show to the form
-        return "bidList/update";
+    	log.info("call to GET /bidList/update/{}", id);
+    	try { 
+    		BidList bid = bidListService.findById(id);  
+    		model.addAttribute("bidList", bid);
+    		return "bidList/update";
+    	}
+    	catch (Exception ex) { 
+    		log.warn("Exception : {}", ex);
+    		return null;
+    	}
+
     }
 
     @PostMapping("/bidList/update/{id}")
