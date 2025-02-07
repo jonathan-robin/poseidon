@@ -1,6 +1,8 @@
 package com.nnk.springboot.services;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,34 @@ public class BidListService {
 		else 
 			throw new Exception("can't retrieve Bid with id " + id);
 
+	}
+	
+	public BidList updateBidList(BidList bidList) throws Exception { 
+		
+		Optional<BidList> optBid = bidListRepository.findById(bidList.getId());
+		if (optBid.isPresent()) { 
+			BidList bid = optBid.get();
+
+		    for (Field field : BidList.class.getDeclaredFields()) {
+		        field.setAccessible(true);
+		        try {
+		            Object originalValue = field.get(bid);
+		            Object updatedValue = field.get(bidList);
+
+		            if (!Objects.equals(originalValue, updatedValue)) {
+		                field.set(bid, updatedValue);
+		            }
+		        } catch (IllegalAccessException e) {
+		            e.printStackTrace();
+		        }
+		    }
+		    bidListRepository.save(bid);
+		    return optBid.get();
+		}
+		else 
+			throw new Exception("Can't find current Bid");
+		
+		
 	}
 	
 	

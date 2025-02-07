@@ -81,9 +81,21 @@ public class BidListController {
 
     @PostMapping("/bidList/update/{id}")
     public String updateBid(@PathVariable("id") Integer id, @jakarta.validation.Valid BidList bidList,
-                             BindingResult result, Model model) {
+                             BindingResult result, Model model) throws Exception{
         // TODO: check required fields, if valid call service to update Bid and return list Bid
-        return "redirect:/bidList/list";
+    	if (result.hasErrors()) 
+    		return null; 
+    	
+    	if (bidList.getBidQuantity() > 0 && bidList.getType() != null && bidList.getAccount() != null) { 
+    		bidListService.updateBidList(bidList);
+    		List<BidList> bids = bidListRepository.findAll();
+    		model.addAttribute("bidList", bids);
+            return "redirect:/bidList/list";
+    	} else { 
+    		throw new Exception("Error in form, can't update Bid.");
+    	}
+
+
     }
 
     @GetMapping("/bidList/delete/{id}")
