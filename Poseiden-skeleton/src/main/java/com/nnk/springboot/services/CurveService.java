@@ -10,7 +10,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.repositories.CurvePointRepository;
 
@@ -20,79 +19,101 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CurveService {
 
-	@Autowired
-	private CurvePointRepository curveRepository;
-	
-	public List<CurvePoint> findAllCurves(){ 
-		return curveRepository.findAll();
-	}
-	
-	public void saveCurve(CurvePoint curve){ 
-    	
-    	CurvePoint newCurve = new CurvePoint(); 
-    	newCurve.setTerm(curve.getTerm()); 
-    	newCurve.setValue(curve.getValue()); 
-    	newCurve.setCurveId(curve.getCurveId());
-    	
-    	log.info("Saving new curve {}...", newCurve);
-    	curveRepository.save(newCurve);
-	}
-	
-	public CurvePoint findById(Integer id) throws Exception { 
-	Optional<CurvePoint> curve = curveRepository.findById(id); 
-		
-		if (curve.isPresent())
-			return curve.get(); 
-		
-		else 
-			throw new Exception("can't retrieve curvePoint with id " + id);
-	}
-	
-	
-	public CurvePoint updateCurvePoint(CurvePoint curvePoint) throws Exception { 
-		
-		Optional<CurvePoint> optCurve= curveRepository.findById(curvePoint.getId());
-		Map<String, String> tmpUpdates = new HashMap<>();
-		if (optCurve.isPresent()) { 
-			CurvePoint curve = optCurve.get();
+    @Autowired
+    private CurvePointRepository curveRepository;
 
-		    for (Field field : CurvePoint.class.getDeclaredFields()) {
-		        field.setAccessible(true);
-		        try {
-		            Object originalValue = field.get(curve);
-		            Object updatedValue = field.get(curvePoint);
+    /**
+     * Retrieves all CurvePoint records from the database.
+     *
+     * @return a list of all CurvePoints
+     */
+    public List<CurvePoint> findAllCurves() {
+        return curveRepository.findAll();
+    }
 
-		            if (!Objects.equals(originalValue, updatedValue)) {
-		            	tmpUpdates.put(field.toString(), updatedValue.toString());
-		                field.set(curve, updatedValue);
-		            }
-		        } catch (IllegalAccessException e) {
-		            e.printStackTrace();
-		        }
-		    }
-		    log.info("Updating Curve id: {} with updates {}", curve.getId(), tmpUpdates);
-		    curveRepository.save(curve);
-		    return findById(curve.getId());
-		}
-		else 
-			throw new Exception("Can't find current Bid");
-		
-		
-	}
-	
-	public void deleteCurvePointById(Integer id) throws Exception { 
-		Optional<CurvePoint> curveToDelete = curveRepository.findById(id); 
-		if (curveToDelete.isPresent()) {
-			log.info("Deleting curvePoint with ID: {}", id);
-			curveRepository.deleteById(id);
-		}
-		else {
-			throw new Exception("Can't find the curvePoint for id: " + id);
-		}
-		
-	}
-	
-	
-	
-	
+    /**
+     * Saves a new CurvePoint to the database.
+     *
+     * @param curve the CurvePoint to be saved
+     */
+    public void saveCurve(CurvePoint curve) {
+
+        CurvePoint newCurve = new CurvePoint();
+        newCurve.setTerm(curve.getTerm());
+        newCurve.setValue(curve.getValue());
+        newCurve.setCurveId(curve.getCurveId());
+
+        log.info("Saving new curve {}...", newCurve);
+        curveRepository.save(newCurve);
+    }
+
+    /**
+     * Finds a CurvePoint by its ID.
+     *
+     * @param id the ID of the CurvePoint to retrieve
+     * @return the CurvePoint if found
+     * @throws Exception if no CurvePoint is found with the given ID
+     */
+    public CurvePoint findById(Integer id) throws Exception {
+        Optional<CurvePoint> curve = curveRepository.findById(id);
+
+        if (curve.isPresent()) {
+            return curve.get();
+        } else {
+            throw new Exception("Can't retrieve curvePoint with id " + id);
+        }
+    }
+
+    /**
+     * Updates an existing CurvePoint with new values.
+     *
+     * @param curvePoint the CurvePoint containing updated values
+     * @return the updated CurvePoint
+     * @throws Exception if the CurvePoint to update is not found
+     */
+    public CurvePoint updateCurvePoint(CurvePoint curvePoint) throws Exception {
+
+        Optional<CurvePoint> optCurve = curveRepository.findById(curvePoint.getId());
+        Map<String, String> tmpUpdates = new HashMap<>();
+
+        if (optCurve.isPresent()) {
+            CurvePoint curve = optCurve.get();
+
+            for (Field field : CurvePoint.class.getDeclaredFields()) {
+                field.setAccessible(true);
+                try {
+                    Object originalValue = field.get(curve);
+                    Object updatedValue = field.get(curvePoint);
+
+                    if (!Objects.equals(originalValue, updatedValue)) {
+                        tmpUpdates.put(field.getName(), updatedValue != null ? updatedValue.toString() : "null");
+                        field.set(curve, updatedValue);
+                    }
+                } catch (IllegalAccessException e) {
+                    log.error("Error updating field: {}", field.getName(), e);
+                }
+            }
+            log.info("Updating Curve id: {} with updates {}", curve.getId(), tmpUpdates);
+            curveRepository.save(curve);
+            return findById(curve.getId());
+        } else {
+            throw new Exception("Can't find current CurvePoint");
+        }
+    }
+
+    /**
+     * Deletes a CurvePoint by its ID.
+     *
+     * @param id the ID of the CurvePoint to delete
+     * @throws Exception if the CurvePoint is not found
+     */
+    public void deleteCurvePointById(Integer id) throws Exception {
+        Optional<CurvePoint> curveToDelete = curveRepository.findById(id);
+        if (curveToDelete.isPresent()) {
+            log.info("Deleting curvePoint with ID: {}", id);
+            curveRepository.deleteById(id);
+        } else {
+            throw new Exception("Can't find the curvePoint for id: " + id);
+        }
+    }
 }
