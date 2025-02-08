@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
+@Slf4j
 public class UserController {
     @Autowired
     private UserRepository userRepository;
@@ -57,6 +59,9 @@ public class UserController {
     @PostMapping("/user/update/{id}")
     public String updateUser(@PathVariable("id") Integer id, @Valid User user,
                              BindingResult result, Model model) {
+    	
+    	log.info("result: {}",result.getAllErrors());
+   
         if (result.hasErrors()) {
             return "user/update";
         }
