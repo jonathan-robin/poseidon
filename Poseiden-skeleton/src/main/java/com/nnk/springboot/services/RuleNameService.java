@@ -10,9 +10,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.domain.RuleName;
-import com.nnk.springboot.repositories.RatingRepository;
 import com.nnk.springboot.repositories.RuleNameRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +58,7 @@ public class RuleNameService {
 		if (opt.isPresent()) { 
 			RuleName old = opt.get();
 
-		    for (Field field : Rating.class.getDeclaredFields()) {
+		    for (Field field : RuleName.class.getDeclaredFields()) {
 		        field.setAccessible(true);
 		        try {
 		            Object originalValue = field.get(old);
