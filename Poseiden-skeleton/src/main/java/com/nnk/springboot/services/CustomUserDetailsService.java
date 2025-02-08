@@ -20,6 +20,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Loads a user by their username from the database.
+     * 
+     * @param username the username of the user to load
+     * @return UserDetails object containing the user's information
+     * @throws UsernameNotFoundException if the user is not found
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
@@ -28,6 +35,12 @@ public class CustomUserDetailsService implements UserDetailsService {
                 user.getPassword(), getGrantedAuthorities(user.getRole()));
     }
 
+    /**
+     * Retrieves the granted authorities based on the user's role.
+     * 
+     * @param role the role of the user (e.g., "ADMIN", "USER")
+     * @return a list of granted authorities corresponding to the user's role
+     */
     private List<GrantedAuthority> getGrantedAuthorities(String role) {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
