@@ -65,7 +65,7 @@ public class CurveController {
      * @return the view name for the add curve point form
      */
     @GetMapping("/curvePoint/add")
-    public String addCurvePointForm(CurvePoint bid, Model model) {
+    public String addCurvePointForm(CurvePoint curvePoint, Model model) {
         log.info("Calling GET /curvePoint/add");
         model.addAttribute("curve", new CurvePoint());
         return "curvePoint/add";
@@ -83,10 +83,15 @@ public class CurveController {
     public String validate(@Valid CurvePoint curvePoint, BindingResult result, Model model) {
         log.info("Calling POST /curvePoint/validate with {}", curvePoint.toString());
 
+        if (curvePoint.getValue() < 0)
+            result.rejectValue("value", "error.value", "Value cannot be negative...");
+        
         if (result.hasErrors()) {
-            log.info("Validation errors: {}", result.getAllErrors());
-            return "curvePoint/add";
+            model.addAttribute("error", true); 
+            model.addAttribute("message", result.getAllErrors());
+            return "curvePoint/add";  
         }
+        
 
         curveService.saveCurve(curvePoint);
         List<CurvePoint> curves = curveService.findAllCurves();
@@ -129,9 +134,15 @@ public class CurveController {
     public String updateBid(@PathVariable("id") Integer id, @jakarta.validation.Valid CurvePoint curvePoint,
                              BindingResult result, Model model) throws Exception {
         log.info("Calling POST /curvePoint/update/{} with {}", id, curvePoint);
-
-        if (result.hasErrors()) 
-            return null; 
+        
+        if (curvePoint.getValue() < 0)
+            result.rejectValue("value", "error.value", "Value cannot be negative...");
+        
+        if (result.hasErrors()) {
+            model.addAttribute("error", true); 
+            model.addAttribute("message", result.getAllErrors());
+            return "curvePoint/update";  
+        }
         
         if (curvePoint.getValue() > 0 && curvePoint.getTerm() != null && curvePoint.getCurveId() != null) { 
             curveService.updateCurvePoint(curvePoint);

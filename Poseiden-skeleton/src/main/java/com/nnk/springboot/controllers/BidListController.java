@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -82,11 +83,16 @@ public class BidListController {
     @PostMapping("/bidList/validate")
     public String validate(@jakarta.validation.Valid BidList bid, @AuthenticationPrincipal UserDetails userDetails, BindingResult result, Model model) {
         log.info("Calling POST /bidList/validate with {}", bid.toString());
-
+        
+        if (bid.getBidQuantity() < 0)
+            result.rejectValue("bidQuantity", "error.bidQuantity", "Bid Quantity cannot be negative...");
+        
         if (result.hasErrors()) {
+            model.addAttribute("error", true); 
+            model.addAttribute("message", result.getAllErrors());
             return "bidList/add";  
         }
-
+        
         List<BidList> bids = bidListService.saveBid(bid);
         model.addAttribute("bidLists", bids);
         return "bidList/list";  
@@ -128,8 +134,14 @@ public class BidListController {
                              BindingResult result, Model model) throws Exception {
         log.info("Calling POST /bidList/update/{} with {}", id, bidList);
 
-        if (result.hasErrors()) 
-            return null; 
+        if (bidList.getBidQuantity() < 0)
+            result.rejectValue("bidQuantity", "error.bidQuantity", "Bid Quantity cannot be negative...");
+        
+        if (result.hasErrors()) {
+            model.addAttribute("error", true); 
+            model.addAttribute("message", result.getAllErrors());
+            return "bidList/update";  
+        }
         
         if (bidList.getBidQuantity() > 0 && bidList.getType() != null && bidList.getAccount() != null) { 
             bidListService.updateBidList(bidList);
