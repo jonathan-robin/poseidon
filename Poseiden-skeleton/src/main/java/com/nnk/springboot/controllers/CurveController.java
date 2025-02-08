@@ -53,6 +53,7 @@ public class CurveController {
 
   	  // Si des erreurs de validation sont présentes, renvoyer la vue avec les erreurs
       if (result.hasErrors()) {
+    	  log.info("errors: {}", result.getAllErrors());
           return "curvePoint/add";  // Ou toute autre vue qui montre les erreurs de validation
       }
 //
@@ -85,7 +86,7 @@ public class CurveController {
     	if (result.hasErrors()) 
     		return null; 
     	
-    	if (curvePoint.getValue() > 0 && curvePoint.getTerm() != null) { 
+    	if (curvePoint.getValue() > 0 && curvePoint.getTerm() != null && curvePoint.getCurveId() != null) { 
     		curveService.updateCurvePoint(curvePoint);
     		List<CurvePoint> curvePoints = curveService.findAllCurves();
     		model.addAttribute("curvePoints", curvePoints);
