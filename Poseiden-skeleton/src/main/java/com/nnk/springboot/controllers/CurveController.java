@@ -56,7 +56,7 @@ public class CurveController {
     	  log.info("errors: {}", result.getAllErrors());
           return "curvePoint/add";  // Ou toute autre vue qui montre les erreurs de validation
       }
-//
+      
       curveService.saveCurve(curvePoint);
       List<CurvePoint> curves = curveService.findAllCurves();
       
