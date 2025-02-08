@@ -82,11 +82,15 @@ public class RatingController {
     public String validate(@Valid Rating rating, BindingResult result, Model model) {
         log.info("call to POST /rating/validate with {}", rating.toString());
 
+        if (rating.getOrderNumber() < 0)
+            result.rejectValue("orderNumber", "error.orderNumber", "orderNumber cannot be negative...");
+        
         if (result.hasErrors()) {
-            log.info("errors: {}", result.getAllErrors());
-            return "rating/add";
+            model.addAttribute("error", true); 
+            model.addAttribute("message", result.getAllErrors());
+            return "rating/add";  
         }
-
+        
         ratingService.saveRating(rating);
         List<Rating> ratings = ratingService.findAllRatings();
         model.addAttribute("ratings", ratings);
@@ -128,8 +132,15 @@ public class RatingController {
     @PostMapping("/rating/update/{id}")
     public String updateRating(@PathVariable("id") Integer id, @Valid Rating rating,
                              BindingResult result, Model model) throws Exception {
-        if (result.hasErrors()) 
-            return null;
+    	
+        if (rating.getOrderNumber() < 0)
+            result.rejectValue("orderNumber", "error.orderNumber", "orderNumber cannot be negative...");
+        
+        if (result.hasErrors()) {
+            model.addAttribute("error", true); 
+            model.addAttribute("message", result.getAllErrors());
+            return "rating/update";  
+        }
 
         if (rating.getFitchRating() != null && rating.getMoodysRating() != null 
             && rating.getSandPRating() != null && rating.getOrderNumber() > 0) { 
