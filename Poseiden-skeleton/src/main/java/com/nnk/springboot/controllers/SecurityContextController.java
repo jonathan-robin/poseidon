@@ -12,7 +12,7 @@ public class SecurityContextController {
     public String getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
-            return "Logged-in user: " + authentication.getName();
+            return "Logged-in user: " + authentication.getName() + " role: " + authentication.getAuthorities();
         } else {
             return "No user logged in";
         }

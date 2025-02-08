@@ -2,6 +2,8 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.repositories.UserRepository;
+import com.nnk.springboot.services.UserService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -35,6 +37,9 @@ public class UserControllerTest {
 
     @Mock
     private UserRepository userRepository;
+    
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private UserController userController;
@@ -105,6 +110,7 @@ public class UserControllerTest {
     public void testShowUpdateForm() throws Exception {
         // Given
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(userService.findById(any(Integer.class))).thenReturn(new User());
 
         // When + Then
         mockMvc.perform(get("/user/update/{id}", 1))
@@ -162,15 +168,20 @@ public class UserControllerTest {
 
     @Test
     public void testDeleteUserNotFound() throws Exception {
-        // Given
-        when(userRepository.findById(1)).thenReturn(Optional.empty());
+        // Given: Simulation d'un utilisateur inexistant
+        doThrow(new Exception("Invalid user Id:1")).when(userService).deleteUserById(1);
+        Model model = mock(Model.class);  // Mock du Model
 
+        // When: Vérification que l'exception est bien levée
         Exception exception = assertThrows(Exception.class, () -> {
-        	userController.deleteUser(1, null);
+            userController.deleteUser(1, model);
         });
-        
+
+        // Then: Vérification du message d'erreur
         assertEquals("Invalid user Id:1", exception.getMessage());
 
+        // Vérifier que le service a bien été appelé une fois avec l'ID 1
+        verify(userService, times(1)).deleteUserById(1);
     }
 }
 

@@ -3,18 +3,36 @@ package com.nnk.springboot.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+/**
+* User entity used through the APP . . .
+* 
+* @author me
+* 
+*/
 @Entity
 @Table(name = "users")
 public class User {
+	
+	/**
+	 * Auto-increment ID used to retrieve a single user
+	 */
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
+    
     @NotBlank(message = "Username is mandatory")
     private String username;
+    
     @NotBlank(message = "Password is mandatory")
     private String password;
+    
     @NotBlank(message = "FullName is mandatory")
     private String fullname;
+    
+	/**
+	 * Role given to each user (ADMIN/USER)...
+	 * Some pages are only visible by ADMIN
+	 */
     @NotBlank(message = "Role is mandatory")
     private String role;
 

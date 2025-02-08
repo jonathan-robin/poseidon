@@ -49,7 +49,7 @@ public class SecurityConfig{
         		
         		.authorizeHttpRequests((requests) -> requests
                 .requestMatchers( "/", "/login", "/app/login", "/app/error").permitAll()
-                .requestMatchers("/user/*").hasAuthority("ADMIN")
+                .requestMatchers("/user/*").hasAuthority("ROLE_ADMIN")
                 //Authentication request parameters
                 .anyRequest().authenticated()
                 

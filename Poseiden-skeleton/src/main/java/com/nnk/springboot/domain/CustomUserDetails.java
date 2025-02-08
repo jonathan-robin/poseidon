@@ -13,7 +13,11 @@ import lombok.NoArgsConstructor;
 
 @Component
 public class CustomUserDetails implements UserDetails {
-    private String username;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String username;
     private String password;
     private List<GrantedAuthority> authorities;
 
@@ -53,6 +57,6 @@ public class CustomUserDetails implements UserDetails {
 	@Override
 	public java.util.Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.authorities;
 	}
 }
