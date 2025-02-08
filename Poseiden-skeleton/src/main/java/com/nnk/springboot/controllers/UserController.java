@@ -3,6 +3,8 @@ package com.nnk.springboot.controllers;
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.services.UserService;
 
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -62,6 +64,11 @@ public class UserController {
     public String validate(@Valid User user, BindingResult result, Model model) {
         log.info("Calling POST /user/validate with user: {}", user);
 
+        String password = user.getPassword();
+        if (password != null && !Pattern.matches("^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,}$", password)) {
+            result.rejectValue("password", "error.password", "Password must contain at least 8 characters, one uppercase letter, one symbol, and one number.");
+        }
+
         if (!result.hasErrors()) {
         	userService.saveUser(user);
             model.addAttribute("users", userService.findAll());
@@ -100,14 +107,19 @@ public class UserController {
     public String updateUser(@PathVariable("id") Integer id, @Valid User user,
                              BindingResult result, Model model) {
         log.info("Calling POST /user/update/{} with user: {}", id, user);
-
-        if (result.hasErrors()) {
-            return "user/update";
+        
+        String password = user.getPassword();
+        if (password != null && !Pattern.matches("^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,}$", password)) {
+            result.rejectValue("password", "error.password", "Password must contain at least 8 characters, one uppercase letter, one symbol, and one number.");
+        }
+        
+        if (!result.hasErrors()) {
+            userService.saveUser(user, id);
+            model.addAttribute("users", userService.findAll());
+            return "redirect:/user/list";
         }
 
-        userService.saveUser(user, id);
-        model.addAttribute("users", userService.findAll());
-        return "redirect:/user/list";
+        return "user/update";
     }
 
     /**
