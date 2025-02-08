@@ -16,7 +16,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Controller pour gérer les utilisateurs dans l'application.
+ * Controller for managing users in the application.
  */
 @Controller
 @Slf4j
@@ -26,10 +26,10 @@ public class UserController {
     private UserService userService;
 
     /**
-     * Affiche la liste des utilisateurs.
+     * Displays the list of users.
      * 
-     * @param model Le modèle pour passer des données à la vue.
-     * @return La vue avec la liste des utilisateurs.
+     * @param model The model to pass data to the view.
+     * @return The view with the list of users.
      */
     @RequestMapping("/user/list")
     public String home(Model model) {
@@ -39,10 +39,10 @@ public class UserController {
     }
 
     /**
-     * Affiche le formulaire pour ajouter un utilisateur.
+     * Displays the form for adding a new user.
      * 
-     * @param user L'objet utilisateur à ajouter.
-     * @return La vue du formulaire d'ajout d'utilisateur.
+     * @param user The user object to be added.
+     * @return The view with the add user form.
      */
     @GetMapping("/user/add")
     public String addUser(User user) {
@@ -51,12 +51,12 @@ public class UserController {
     }
 
     /**
-     * Valide et enregistre un nouvel utilisateur.
+     * Validates and saves a new user.
      * 
-     * @param user   L'objet utilisateur à valider et enregistrer.
-     * @param result Les résultats de la validation des données utilisateur.
-     * @param model  Le modèle pour passer des données à la vue.
-     * @return La vue de la liste des utilisateurs si la validation réussit, sinon retourne le formulaire d'ajout.
+     * @param user   The user object to validate and save.
+     * @param result The validation result for the user data.
+     * @param model  The model to pass data to the view.
+     * @return The list view if validation succeeds, otherwise returns the add user form.
      */
     @PostMapping("/user/validate")
     public String validate(@Valid User user, BindingResult result, Model model) {
@@ -71,30 +71,30 @@ public class UserController {
     }
 
     /**
-     * Affiche le formulaire pour mettre à jour un utilisateur existant.
+     * Displays the form to update an existing user.
      * 
-     * @param id    L'ID de l'utilisateur à mettre à jour.
-     * @param model Le modèle pour passer des données à la vue.
-     * @return La vue du formulaire de mise à jour d'utilisateur.
+     * @param id    The ID of the user to update.
+     * @param model The model to pass data to the view.
+     * @return The view with the update user form.
      */
     @GetMapping("/user/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         log.info("Calling GET /user/update/{} with id: {}", id);
 
     	User user = userService.findById(id);
-        user.setPassword("");  // Effacer le mot de passe avant de l'afficher
+        user.setPassword("");  // Clear the password before displaying it
         model.addAttribute("user", user);
         return "user/update";
     }
 
     /**
-     * Met à jour les informations d'un utilisateur.
+     * Updates the information of an existing user.
      * 
-     * @param id     L'ID de l'utilisateur à mettre à jour.
-     * @param user   L'objet utilisateur mis à jour.
-     * @param result Les résultats de la validation des données utilisateur.
-     * @param model  Le modèle pour passer des données à la vue.
-     * @return La vue de la liste des utilisateurs après mise à jour.
+     * @param id     The ID of the user to update.
+     * @param user   The updated user object.
+     * @param result The validation result for the user data.
+     * @param model  The model to pass data to the view.
+     * @return The list view after updating the user.
      */
     @PostMapping("/user/update/{id}")
     public String updateUser(@PathVariable("id") Integer id, @Valid User user,
@@ -111,12 +111,12 @@ public class UserController {
     }
 
     /**
-     * Supprime un utilisateur.
+     * Deletes a user.
      * 
-     * @param id    L'ID de l'utilisateur à supprimer.
-     * @param model Le modèle pour passer des données à la vue.
-     * @return La vue de la liste des utilisateurs après suppression.
-     * @throws Exception Si une erreur se produit lors de la suppression.
+     * @param id  The ID of the user to delete.
+     * @param model The model to pass data to the view.
+     * @return The list view after the user is deleted.
+     * @throws Exception If an error occurs during deletion.
      */
     @GetMapping("/user/delete/{id}")
     public String deleteUser(@PathVariable("id") Integer id, Model model) throws Exception {
