@@ -1,4 +1,5 @@
 package com.nnk.springboot.config;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,9 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -18,17 +16,25 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.nnk.springboot.services.CustomUserDetailsService;
 
-import org.springframework.security.core.userdetails.UserDetails;
-
-
+/**
+ * Configuration class for Spring Security settings in the application.
+ * Configures authentication, authorization, password encoding, session management, and static resource handling.
+ */
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig{
-	
+public class SecurityConfig {
 
-   @Autowired
+    @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+    /**
+     * Bean for AuthenticationManager used for authenticating users.
+     * 
+     * @param http The HttpSecurity object used to configure the security settings.
+     * @param bCryptPasswordEncoder The password encoder used to validate user passwords.
+     * @return The AuthenticationManager bean.
+     * @throws Exception If there is an error configuring the AuthenticationManager.
+     */
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
@@ -37,68 +43,59 @@ public class SecurityConfig{
     }
 
     /**
-     * Secure the http access
-     *
-     * @param http HttpSecurity
-     * @return http
-     * @throws Exception
+     * Configures HTTP security for the application, including authentication and authorization.
+     * Defines which URLs are accessible to which roles, configures login/logout behaviors, session management,
+     * and exception handling for access-denied scenarios.
+     * 
+     * @param http The HttpSecurity object used to configure the HTTP security settings.
+     * @return The configured SecurityFilterChain.
+     * @throws Exception If there is an error configuring the HTTP security.
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-        		
-        		.authorizeHttpRequests((requests) -> requests
-                .requestMatchers( "/", "/login", "/app/login", "/app/error").permitAll()
-                .requestMatchers("/user/*").hasAuthority("ROLE_ADMIN")
-                //Authentication request parameters
-                .anyRequest().authenticated()
-                
-                )
-                .formLogin((formLogin) -> formLogin
-                        //.usernameParameter("user.username")
-                        .defaultSuccessUrl("/bidList/list", true)
-                )
-                //logout
-                .logout((logout) -> logout.permitAll()
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/app-logout"))
-                        //Definition of the default logout success URL
-                        .logoutSuccessUrl("/")
-                        //Invalidate the current HTTP session and its cookies
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                ).exceptionHandling((exceptionHandling) -> exceptionHandling.accessDeniedPage("/app/error"))
-                
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)  // Create session if needed
+            .authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/", "/login", "/app/login", "/app/error").permitAll()  // Permit all users to access these paths
+                .requestMatchers("/user/*").hasAuthority("ROLE_ADMIN")  // Only allow users with "ROLE_ADMIN" to access user-related pages
+                .anyRequest().authenticated()  // Require authentication for any other request
+            )
+            .formLogin((formLogin) -> formLogin
+                .defaultSuccessUrl("/bidList/list", true)  // Redirect to the bid list on successful login
+            )
+            .logout((logout) -> logout.permitAll()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/app-logout"))  // Specify the logout URL
+                .logoutSuccessUrl("/")  // Redirect to home page on logout success
+                .invalidateHttpSession(true)  // Invalidate the session on logout
+                .deleteCookies("JSESSIONID")  // Delete the session cookie on logout
+            )
+            .exceptionHandling((exceptionHandling) -> exceptionHandling.accessDeniedPage("/app/error"))  // Handle access denied exceptions
+            .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)  // Create session only if required
                 .maximumSessions(1)  // Limit to one session per user
-                .expiredUrl("/login?expired=true");  // Redirect if the session expires
-                //In case of exception of an access denied
-               
-                
+                .expiredUrl("/login?expired=true");  // Redirect to login page if the session expires
 
         return http.build();
     }
 
     /**
-     *Bcrypt uses hash algorithm to store password
-     *
-     * @return passwordEncoder
+     * Bean for encoding passwords using the BCrypt hash algorithm.
+     * 
+     * @return A PasswordEncoder configured with the BCrypt algorithm.
      */
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     /**
-     * Function for allowing the loading of the static resources
-     *
-     * @return
+     * Allows static resources (e.g., CSS files) to be loaded without security constraints.
+     * 
+     * @return The WebSecurityCustomizer to customize web security for static resources.
      */
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web
-                .ignoring()
-                .requestMatchers("/css/**");
+            .ignoring()
+            .requestMatchers("/css/**");  // Allow access to static resources in the "/css" directory without authentication
     }
-    
 }
