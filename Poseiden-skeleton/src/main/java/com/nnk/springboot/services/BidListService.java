@@ -85,6 +85,7 @@ public class BidListService {
 	public void deleteBidById(Integer id) throws Exception { 
 		Optional<BidList> bidToDelete = bidListRepository.findById(id); 
 		if (bidToDelete.isPresent()) {
+			log.info("Deleting Bid with ID: {}", id);
 			bidListRepository.deleteById(id);
 		}
 		else {
