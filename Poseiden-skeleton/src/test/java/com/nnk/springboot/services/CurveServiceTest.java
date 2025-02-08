@@ -16,11 +16,9 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 public class CurveServiceTest {
 
-    // Utiliser @MockBean pour injecter un mock de CurvePointRepository
     @MockBean
     private CurvePointRepository curveRepository;
 
-    // Le service sera automatiquement injecté par Spring
     @Autowired
     private CurveService curveService;
 
@@ -37,13 +35,10 @@ public class CurveServiceTest {
         curve2.setTerm(2.0);
         curve2.setValue(200.5);
 
-        // Quand curveRepository.findAll() est appelé, on retourne une liste de courbes simulées
         when(curveRepository.findAll()).thenReturn(List.of(curve1, curve2));
 
-        // When
         List<CurvePoint> curves = curveService.findAllCurves();
 
-        // Then
         assertNotNull(curves);
         assertEquals(2, curves.size());
         assertEquals(1, curves.get(0).getCurveId());
@@ -96,7 +91,7 @@ public class CurveServiceTest {
             curveService.findById(id);
         });
 
-        assertEquals("can't retrieve curvePoint with id 999", exception.getMessage());
+        assertEquals("Can't retrieve curvePoint with id 999", exception.getMessage());
     }
 
     @Test
@@ -143,7 +138,7 @@ public class CurveServiceTest {
             curveService.updateCurvePoint(updatedCurve);
         });
 
-        assertEquals("Can't find current Bid", exception.getMessage());
+        assertEquals("Can't find current CurvePoint", exception.getMessage());
     }
 
     @Test

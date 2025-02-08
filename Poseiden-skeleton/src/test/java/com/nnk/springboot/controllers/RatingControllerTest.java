@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -61,21 +63,24 @@ public class RatingControllerTest {
     @Test
     @WithMockUser
     public void testValidateRating() throws Exception {
-        // Simuler l'envoi d'un formulaire valide pour ajouter un Rating
         Rating validRating = new Rating();
         validRating.setFitchRating("Fitch");
         validRating.setMoodysRating("AAA");
         validRating.setSandPRating("A");
         validRating.setOrderNumber(1);
+        
+        Model model = mock(Model.class);
+        BindingResult bindingResult = mock(BindingResult.class);
 
-        mockMvc.perform(post("/rating/validate")
+        mockMvc.perform(post("/rating/validate", validRating, bindingResult, model)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("fitchRating", "Fitch")
                 .param("moodysRating", "AAA")
                 .param("sandPRating", "A")
                 .param("orderNumber", "1")
-                .with(csrf()))  // Ajouter csrf pour tester la sécurité
-                .andExpect(view().name("rating/list"));  // Vérifie que la redirection est vers "rating/list"
+                .with(csrf()))
+        		.andExpect(status().isOk())
+                .andExpect(view().name("rating/list"));
         
         verify(ratingService, times(1)).saveRating(any(Rating.class));
     }
@@ -113,8 +118,8 @@ public class RatingControllerTest {
                 .param("moodysRating", ratingToUpdate.getMoodysRating())
                 .param("sandPRating", ratingToUpdate.getSandPRating())
                 .param("orderNumber", String.valueOf(ratingToUpdate.getOrderNumber()))
-                .with(csrf()))  // Ajouter csrf pour tester la sécurité
-                .andExpect(status().is3xxRedirection())  // Vérifie que la redirection est vers "rating/list"
+                .with(csrf())) 
+                .andExpect(status().is3xxRedirection())  
                 .andExpect(view().name("redirect:/rating/list"));
 
         verify(ratingService, times(1)).updateRating(any(Rating.class));
@@ -123,12 +128,12 @@ public class RatingControllerTest {
     @Test
     @WithMockUser
     public void testDeleteRating() throws Exception {
-        // Supposons qu'il existe un Rating avec l'ID 1
+        
         int ratingId = 1;
 
         mockMvc.perform(get("/rating/delete/{id}", ratingId))
-                .andExpect(status().is3xxRedirection())  // Vérifie la redirection après suppression
-                .andExpect(redirectedUrl("/rating/list"));  // Vérifie la redirection vers la liste après suppression
+                .andExpect(status().is3xxRedirection())  
+                .andExpect(redirectedUrl("/rating/list")); 
         
         verify(ratingService, times(1)).deleteRatingById(ratingId);
     }
