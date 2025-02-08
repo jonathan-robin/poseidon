@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Controller for managing CurvePoint operations.
  */
-@RestController
+@Controller
 @Slf4j
 public class CurveController {
     
