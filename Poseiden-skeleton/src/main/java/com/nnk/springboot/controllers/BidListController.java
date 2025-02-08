@@ -109,4 +109,6 @@ public class BidListController {
     	model.addAttribute("bidList", bids);
     	return "redirect:/bidList/list";
     }
+
+
 }

@@ -22,15 +22,26 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,5 +117,87 @@ public class BidListControllerTest {
                 .andExpect(model().attributeExists("bidLists"));
     }
     
-    
+    @Test
+    @WithMockUser(username="test",password="test",roles={"ADMIN"})
+    void testUpdateBid_Success() throws Exception {
+        // Arrange
+        BidList bid = new BidList();
+        bid.setId(1);
+        bid.setAccount("Account Test");
+        bid.setType("Type Test");
+        bid.setBidQuantity(100.0);
+
+        List<BidList> bidList = new ArrayList<>();
+        bidList.add(bid);
+
+        when(bidListService.updateBidList(any(BidList.class))).thenReturn(bid);
+        when(bidListService.findAllBids()).thenReturn(bidList);
+
+        // Act & Assert
+        mockMvc.perform(post("/bidList/update/1")
+                .param("account", "Account Test")
+                .param("type", "Type Test")
+                .param("bidQuantity", "100.0")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/bidList/list"));
+
+        verify(bidListService, times(1)).updateBidList(any(BidList.class));
+        verify(bidListService, times(1)).findAllBids();
+    }
+
+    @Test
+    @WithMockUser(username="test",password="test",roles={"ADMIN"})
+    void testUpdateBid_Fail() {
+        // GIVEN
+        BidList bid = new BidList();
+        bid.setId(1);
+        bid.setBidQuantity(-10.0); // Valeur invalide pour forcer l'erreur
+        bid.setType(null); // Type nul pour forcer l'erreur
+        bid.setAccount(null); // Account nul pour forcer l'erreur
+
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(false); // La validation passe, mais les champs sont invalides
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            bidListController.updateBid(1, bid, bindingResult, null);
+        });
+
+        assertEquals("Error in form, can't update Bid.", exception.getMessage());
+    }
+  
+
+    @Test
+    @WithMockUser(username="test",password="test",roles={"ADMIN"})
+    void testDeleteBid_Success() throws Exception {
+        // Arrange
+        doNothing().when(bidListService).deleteBidById(1);
+        when(bidListService.findAllBids()).thenReturn(new ArrayList<>());
+
+        // Act & Assert
+        mockMvc.perform(get("/bidList/delete/1")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/bidList/list"));
+
+        verify(bidListService, times(1)).deleteBidById(1);
+        verify(bidListService, times(1)).findAllBids();
+    }
+
+    @Test
+    @WithMockUser(username="test",password="test",roles={"ADMIN"})
+    void testDeleteBid_NotFound() throws Exception {
+        // Arrange
+        doThrow(new Exception("Bid not found")).when(bidListService).deleteBidById(99);
+        when(bidListService.findAllBids()).thenReturn(new ArrayList<>());
+
+        // Act & Assert
+        mockMvc.perform(get("/bidList/delete/99")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/bidList/list"));
+
+        verify(bidListService, times(1)).deleteBidById(99);
+        verify(bidListService, times(1)).findAllBids();
+    }
 }
