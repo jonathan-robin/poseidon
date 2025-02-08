@@ -83,12 +83,13 @@ public class TradeController {
     public String validate(@Valid Trade trade, BindingResult result, Model model) {
         log.info("call to POST /trade/validate with {}", trade.toString());
 
+        if (trade.getBuyQuantity() < 0)
+            result.rejectValue("buyQuantity", "error.buyQuantity", "buyQuantity cannot be negative...");
+        
         if (result.hasErrors()) {
-            log.info("errors: {}", result.getAllErrors());
-            return "trade/add";
-        } else if (trade.getAccount() == null || trade.getAccount().isEmpty()) {
-            log.info("Account can't be null");
-            return "trade/add";
+            model.addAttribute("error", true); 
+            model.addAttribute("message", result.getAllErrors());
+            return "trade/add";  
         }
 
         tradeService.saveTrade(trade);
@@ -132,8 +133,15 @@ public class TradeController {
     public String updateRating(@PathVariable("id") Integer id, @jakarta.validation.Valid Trade trade,
                                BindingResult result, Model model) throws Exception {
         log.info("Calling GET /trade/update/{} with {}", id, trade.toString());
-        if (result.hasErrors())
-            return null;
+        
+        if (trade.getBuyQuantity() < 0)
+            result.rejectValue("buyQuantity", "error.buyQuantity", "buyQuantity cannot be negative...");
+        
+        if (result.hasErrors()) {
+            model.addAttribute("error", true); 
+            model.addAttribute("message", result.getAllErrors());
+            return "trade/update";  
+        }
 
         if (trade.getAccount() != null && trade.getType() != null && trade.getBuyQuantity() != null) {
             tradeService.updateTrade(trade);
