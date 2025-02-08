@@ -23,10 +23,23 @@ public class BidListService {
 	@Autowired
 	private BidListRepository bidListRepository;
 	
+	/**
+	 * <p>This is meant to send back all the bidList saved in DB. . . </p>
+	 * @param no Parameters
+	 * @return List of BidList
+	 * @since 1.0
+	 */
 	public List<BidList> findAllBids(){ 
 		return this.bidListRepository.findAll();
 	}
 	
+	/**
+	 * <p>Method to save BidList in DB</p>
+	 * <p>Set-up all the necessary fields</p>
+	 * @param The BidlList we want to save in DB
+	 * @return List<BidList> all the bidList we have in DB
+	 * @since 1.0
+	 */
 	public List<BidList> saveBid(BidList bid){ 
     	
     	BidList newBid = new BidList(); 
@@ -40,6 +53,14 @@ public class BidListService {
     	return this.findAllBids();
 	}
 	
+	/**
+	 * <p>Method to find a bidList with a specific ID</p>
+	 * <p>It searches for the bidList in case we don't find throw exception </p>
+	 * @param The BidList ID (Integer)
+	 * @return The BidList
+	 * @throw IllegalArgumentException (in case we don't find by id)
+	 * @since 1.0
+	 */
 	public BidList findById(Integer id) throws Exception { 
 		Optional<BidList> bidList = bidListRepository.findById(id); 
 		
@@ -51,6 +72,15 @@ public class BidListService {
 
 	}
 	
+	/**
+	 * <p>Method to update a bidList</p>
+	 * <p>It searches for the bidList in DB in case we don't find it throw exception </p>
+	 * <p>It goes through all the modification that had been done, apply it then save the bidList </p>
+	 * @param The BidList to save (BidList)
+	 * @return The saved BidList
+	 * @throw New Exception (in case we don't find by id)
+	 * @since 1.0
+	 */
 	public BidList updateBidList(BidList bidList) throws Exception { 
 		
 		Optional<BidList> optBid = bidListRepository.findById(bidList.getId());
@@ -82,6 +112,14 @@ public class BidListService {
 		
 	}
 	
+	/**
+	 * <p>Method to delete a BidList with a specific ID</p>
+	 * <p>It searches for the BidList in case we don't find throw exception </p>
+	 * @param The BidList ID (Integer)
+	 * @return void
+	 * @throw New Exception (in case we don't find by id)
+	 * @since 1.0
+	 */
 	public void deleteBidById(Integer id) throws Exception { 
 		Optional<BidList> bidToDelete = bidListRepository.findById(id); 
 		if (bidToDelete.isPresent()) {
