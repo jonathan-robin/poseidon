@@ -83,7 +83,7 @@ public class UserControllerTest {
         // When + Then
         mockMvc.perform(post("/user/validate")
                         .param("username", "testUser")
-                        .param("password", "password")
+                        .param("password", "abcdefgt125!*P")
                         .param("fullname", "testFullName")// Données valides
                         .param("Role", "testRole"))
                .andExpect(status().is3xxRedirection())
@@ -130,7 +130,7 @@ public class UserControllerTest {
         // When + Then : Simulation de la soumission du formulaire
         mockMvc.perform(post("/user/update/{id}", 15)
                 .param("username", "updatedUser")  // Données valides
-                .param("password", "newPassword") 
+                .param("password", "abcdefghi1!*P") 
                 .param("fullname", "updatedFullName")// Données valides
                 .param("Role", "updatedRole"))
                 .andExpect(status().is3xxRedirection())  // Vérifie la redirection

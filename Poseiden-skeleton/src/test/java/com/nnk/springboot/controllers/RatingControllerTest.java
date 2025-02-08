@@ -141,14 +141,13 @@ public class RatingControllerTest {
     @Test
     @WithMockUser
     public void testRatingValidationError() throws Exception {
-        // Tester un formulaire avec des erreurs de validation
         mockMvc.perform(post("/rating/validate")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("fitchRating", "")  // Champ vide
+                .param("fitchRating", "") 
                 .param("moodysRating", "AAA")
                 .param("sandPRating", "A")
-                .param("orderNumber", "u")  // Valeur invalide
-                .with(csrf()))  // Ajouter csrf pour tester la sécurité
-                .andExpect(view().name("rating/add"));  // Vérifie que la vue affichée est "rating/add" en cas d'erreur de validation
+                .param("orderNumber", "-8")  // Valeur invalide
+                .with(csrf())) 
+                .andExpect(view().name("rating/add")); 
     }
 }

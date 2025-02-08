@@ -126,7 +126,7 @@ public class CurveControllerTest {
         mockMvc.perform(post("/curvePoint/validate")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("term", "p")
-                .param("value", "")
+                .param("value", "-8")
                 .with(csrf()))
                 .andExpect(view().name("curvePoint/add"));  // Vérifie que la vue affichée est "curvePoint/add"
     }

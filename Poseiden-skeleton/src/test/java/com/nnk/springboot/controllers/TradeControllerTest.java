@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.validation.BindingResult;
 
 import java.util.Arrays;
 
@@ -114,10 +115,14 @@ public class TradeControllerTest {
     @Test
     @WithMockUser
     public void testTradeValidationError() throws Exception {
+    	
+    	BindingResult result = mock(BindingResult.class);
+    	result.setNestedPath("Account");
+    	
         mockMvc.perform(post("/trade/validate")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("type", "Type Test")
-                .param("buyQuantity", "10.0")
+                .param("buyQuantity", "-10.0")
                 .with(csrf()))
                 .andExpect(view().name("trade/add"));
     }
