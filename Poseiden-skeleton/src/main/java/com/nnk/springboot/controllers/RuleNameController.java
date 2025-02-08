@@ -51,7 +51,7 @@ public class RuleNameController {
      @PostMapping("/ruleName/validate")
      public String validate(@Valid RuleName ruleName, BindingResult result, Model model) {
          // TODO: check data valid and save to db, after saving return Curve list
-     	log.info("call to POST /ruleName/validate with {}", ruleName.toString());
+    	 log.info("call to POST /ruleName/validate with {}", ruleName.toString());
 
    	  // Si des erreurs de validation sont présentes, renvoyer la vue avec les erreurs
        if (result.hasErrors() ) {

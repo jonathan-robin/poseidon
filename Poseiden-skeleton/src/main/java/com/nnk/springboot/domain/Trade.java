@@ -12,7 +12,6 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-
 @Table(name = "trade")
 public class Trade {
 
