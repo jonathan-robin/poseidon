@@ -67,15 +67,15 @@ public class RatingService {
 
 		            if (!Objects.equals(originalValue, updatedValue)) {
 		            	tmpUpdates.put(field.toString(), updatedValue.toString());
-		                field.set(rating, updatedValue);
+		                field.set(oldRating, updatedValue);
 		            }
 		        } catch (IllegalAccessException e) {
 		            e.printStackTrace();
 		        }
 		    }
 		    log.info("Updating rating id: {} with updates {}", rating.getId(), tmpUpdates);
-		    ratingRepository.save(rating);
-		    return findById(rating.getId());
+		    ratingRepository.save(oldRating);
+		    return findById(oldRating.getId());
 		}
 		else 
 			throw new Exception("Can't find current Bid");
