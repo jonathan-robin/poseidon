@@ -50,6 +50,7 @@ public class TradeController {
      */
     @RequestMapping("/trade/list")
     public String home(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
+    	log.info("call to GET /trade/list");
         String remoteUser = request.getRemoteUser();
         model.addAttribute("trades", tradeService.findAllTrades());
         model.addAttribute("remoteUser", remoteUser);
@@ -65,6 +66,7 @@ public class TradeController {
      */
     @GetMapping("/trade/add")
     public String addRatingForm(Trade trade, Model model) {
+    	log.info("call to GET /trade/add with {}", trade.toString());
         model.addAttribute("trade", new Trade());
         return "trade/add";
     }
@@ -129,6 +131,7 @@ public class TradeController {
     @PostMapping("/trade/update/{id}")
     public String updateRating(@PathVariable("id") Integer id, @jakarta.validation.Valid Trade trade,
                                BindingResult result, Model model) throws Exception {
+        log.info("Calling GET /trade/update/{} with {}", id, trade.toString());
         if (result.hasErrors())
             return null;
 
