@@ -1,5 +1,6 @@
 package com.nnk.springboot.controllers;
 
+import com.fasterxml.jackson.databind.introspect.TypeResolutionContext.Empty;
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.domain.RuleName;
 import com.nnk.springboot.services.RatingService;
@@ -36,7 +37,7 @@ public class RuleNameController {
      @RequestMapping("/ruleName/list")
      public String home(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
      	String remoteUser = request.getRemoteUser();
-         model.addAttribute("ratings", ruleNameService.findAllRuleNames());
+         model.addAttribute("ruleNames", ruleNameService.findAllRuleNames());
          model.addAttribute("remoteUser", remoteUser);
          return "ruleName/list";
      }
@@ -53,9 +54,13 @@ public class RuleNameController {
      	log.info("call to POST /ruleName/validate with {}", ruleName.toString());
 
    	  // Si des erreurs de validation sont présentes, renvoyer la vue avec les erreurs
-       if (result.hasErrors()) {
+       if (result.hasErrors() ) {
      	  log.info("errors: {}", result.getAllErrors());
      	  return "ruleName/add"; // Ou toute autre vue qui montre les erreurs de validation
+       }
+       else if (ruleName.getName() == null || ruleName.getName().isEmpty()) {
+      	  log.info("name can't be null");
+      	  return "ruleName/add"; // Ou toute autre vue qui montre les erreurs de validation
        }
        
        ruleNameService.saveRuleName(ruleName);
