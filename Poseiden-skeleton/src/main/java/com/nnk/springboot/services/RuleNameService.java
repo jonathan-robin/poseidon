@@ -89,7 +89,7 @@ public class RuleNameService {
 			ruleNameRepository.deleteById(id);
 		}
 		else {
-			throw new Exception("Can't find the ruleNale for id: " + id);
+			throw new Exception("Can't find the ruleName for id: " + id);
 		}
 		
 	}

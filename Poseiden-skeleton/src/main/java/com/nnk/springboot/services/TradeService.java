@@ -27,10 +27,11 @@ public class TradeService {
 	}
 	
 	public void saveTrade(Trade trade){ 	
-    	
 		Trade newTrade = new Trade(); 
-		/* TODO */
-    	
+		newTrade.setAccount(trade.getAccount());
+		newTrade.setBuyQuantity(trade.getBuyQuantity());
+		newTrade.setType(trade.getType());
+
     	log.info("Saving new trade {}...", trade);
     	tradeRepository.save(trade);
 	}
