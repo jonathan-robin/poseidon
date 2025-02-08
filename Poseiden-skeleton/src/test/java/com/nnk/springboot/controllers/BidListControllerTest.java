@@ -105,4 +105,6 @@ public class BidListControllerTest {
                 .andExpect(view().name("bidList/list"))
                 .andExpect(model().attributeExists("bidLists"));
     }
+    
+    
 }

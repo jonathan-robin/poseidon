@@ -1,7 +1,10 @@
 package com.nnk.springboot.services;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -51,6 +54,7 @@ public class BidListService {
 	public BidList updateBidList(BidList bidList) throws Exception { 
 		
 		Optional<BidList> optBid = bidListRepository.findById(bidList.getId());
+		Map<String, String> tmpUpdates = new HashMap<>();
 		if (optBid.isPresent()) { 
 			BidList bid = optBid.get();
 
@@ -61,18 +65,31 @@ public class BidListService {
 		            Object updatedValue = field.get(bidList);
 
 		            if (!Objects.equals(originalValue, updatedValue)) {
+		            	tmpUpdates.put(field.toString(), updatedValue.toString());
 		                field.set(bid, updatedValue);
 		            }
 		        } catch (IllegalAccessException e) {
 		            e.printStackTrace();
 		        }
 		    }
+		    log.info("Updating Bid id: {} with updates {}", bid.getId(), tmpUpdates);
 		    bidListRepository.save(bid);
 		    return optBid.get();
 		}
 		else 
 			throw new Exception("Can't find current Bid");
 		
+		
+	}
+	
+	public void deleteBidById(Integer id) throws Exception { 
+		Optional<BidList> bidToDelete = bidListRepository.findById(id); 
+		if (bidToDelete.isPresent()) {
+			bidListRepository.deleteById(id);
+		}
+		else {
+			throw new Exception("Can't find the BidList for id: " + id);
+		}
 		
 	}
 	

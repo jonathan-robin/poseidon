@@ -27,9 +27,6 @@ public class BidListController {
     @Autowired
     private BidListService bidListService;
     
-    @Autowired
-    private BidListRepository bidListRepository;
-    
     public String getUser(@AuthenticationPrincipal UserDetails userDetails) {
         return "User Details: " + userDetails.getUsername();
     }
@@ -88,7 +85,7 @@ public class BidListController {
     	
     	if (bidList.getBidQuantity() > 0 && bidList.getType() != null && bidList.getAccount() != null) { 
     		bidListService.updateBidList(bidList);
-    		List<BidList> bids = bidListRepository.findAll();
+    		List<BidList> bids = bidListService.findAllBids();
     		model.addAttribute("bidList", bids);
             return "redirect:/bidList/list";
     	} else { 
@@ -101,6 +98,15 @@ public class BidListController {
     @GetMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
         // TODO: Find Bid by Id and delete the bid, return to Bid list
-        return "redirect:/bidList/list";
+    	log.info("Calling GET /bidList/delete/{}", id);
+    	try {	
+	    	bidListService.deleteBidById(id);
+    	}
+    	catch (Exception e) { 
+    		log.warn(e.getMessage());
+    	}
+    	List<BidList> bids = bidListService.findAllBids();
+    	model.addAttribute("bidList", bids);
+    	return "redirect:/bidList/list";
     }
 }
