@@ -53,7 +53,7 @@ public class BidList {
      */
     @Column(name="account")
     @NotBlank(message="Account is mandatory")
-    @Size(max=50)
+    @Size(max=30, message= "Too long, must be 30 characters top")
     private String account;
 
     /**
@@ -61,7 +61,7 @@ public class BidList {
      */
     @Column(name="type")
     @NotBlank(message="Type is mandatory")
-    @Size(max=50)
+    @Size(max=30, message = "Too long, must be 30 characters top")
     private String type;
 
     /**
@@ -89,19 +89,20 @@ public class BidList {
      * The ask price.
      */
     @Column(name="ask")
+    @Positive(message= "Must be a positive double number")
     private Double ask;
 
     /**
      * The benchmark reference used for the bid.
      */
     @Column(name="benchmark")
-    @Size(max=125)
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     private String benchmark;
 
     /**
      * The date the bid was recorded in the bid list.
      */
-    @FutureOrPresent(message = "The date should be a date in the future or now")
+    @FutureOrPresent(message = "Must be a future date")
     @Column(name = "bidListDate")
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -111,7 +112,7 @@ public class BidList {
     /**
      * Commentary associated with the bid.
      */
-    @Size(max=125)
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     @Column(name="commentary")
     private String commentary;
 
@@ -119,35 +120,35 @@ public class BidList {
      * The security or financial instrument associated with the bid.
      */
     @Column(name="security")
-    @Size(max=125)
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     private String security;
 
     /**
      * The current status of the bid (e.g., "Active", "Closed").
      */
     @Column(name="status")
-    @Size(max=10)
+    @Size(max=10,  message= "Too long, must be 10 characters top")
     private String status;
 
     /**
      * The name of the trader who created the bid.
      */
     @Column(name="trader")
-    @Size(max=125)
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     private String trader;
 
     /**
      * The book to which the bid belongs.
      */
     @Column(name="book")
-    @Size(max=125)
+    @Size(max=125, message= "Too long, must be 125 characters top")
     private String book;
 
     /**
      * The name of the person who created the bid.
      */
     @Column(name="creationName")
-    @Size(max=125)
+    @Size(max=125, message= "Too long, must be 125 characters top")
     private String creationName;
 
     /**

@@ -1,6 +1,8 @@
 package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,6 +31,7 @@ public class Rating {
      * Moody's rating of the entity.
      * Mapped to the "moodysRating" column in the "rating" table.
      */
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     @Column(name="moodysRating")
     private String moodysRating;
     
@@ -36,6 +39,7 @@ public class Rating {
      * S&P rating of the entity.
      * Mapped to the "sandPRating" column in the "rating" table.
      */
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     @Column(name="sandPRating")
     private String sandPRating;
     
@@ -43,6 +47,7 @@ public class Rating {
      * Fitch rating of the entity.
      * Mapped to the "fitchRating" column in the "rating" table.
      */
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     @Column(name="fitchRating")
     private String fitchRating;
 
@@ -51,6 +56,7 @@ public class Rating {
      * Mapped to the "orderNumber" column in the "rating" table.
      */
     @Column(name="orderNumber")
+    @Positive(message = "CurveId must be a postive double")
     private Integer orderNumber;
     
     /**
