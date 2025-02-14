@@ -1,5 +1,6 @@
 package com.nnk.springboot.controllers;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.repositories.UserRepository;
 import com.nnk.springboot.services.UserService;
@@ -37,6 +38,9 @@ public class UserControllerTest {
     
     @Mock
     private UserService userService;
+    
+    @Mock
+    private UserDetails userDetails;
 
     @InjectMocks
     private UserController userController;
@@ -171,7 +175,7 @@ public class UserControllerTest {
 
         // When: Vérification que l'exception est bien levée
         Exception exception = assertThrows(Exception.class, () -> {
-            userController.deleteUser(1, model);
+            userController.deleteUser(1, model, mock(UserDetails.class));
         });
 
         // Then: Vérification du message d'erreur

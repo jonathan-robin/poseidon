@@ -1,5 +1,6 @@
 package com.nnk.springboot.services;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.nnk.springboot.domain.CustomUserDetails;
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.repositories.UserRepository;
 
@@ -19,6 +21,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private UserService userService;
 
     /**
      * Loads a user by their username from the database.
@@ -29,13 +34,15 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    	
         User user = userRepository.findByUsername(username);
 
-        if (user == null)
-        	throw new UsernameNotFoundException("Invalid credentials");
-        
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),
-                user.getPassword(), getGrantedAuthorities(user.getRole()));
+        if (user == null) 
+        	throw new UsernameNotFoundException("Invalid credentials");	
+
+        return new CustomUserDetails(user.getUsername(),
+                user.getPassword(), getGrantedAuthorities(user.getRole()), userService.isUserEnabled(username));
+
     }
 
     /**

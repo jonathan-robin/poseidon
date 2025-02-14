@@ -1,11 +1,14 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.User;
+import com.nnk.springboot.services.SessionService;
 import com.nnk.springboot.services.UserService;
 
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,11 @@ public class UserController {
 	
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private SessionService sessionService;
+
+
 
     /**
      * Displays the list of users.
@@ -111,7 +118,7 @@ public class UserController {
         log.info("Calling POST /user/update/{} with user: {}", id, user);
         
         String password = user.getPassword();
-        if (password != null && !Pattern.matches("^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,}$", password)) {
+        if (password != null && !Pattern.matches("^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*].{8,}$", password)) {
             result.rejectValue("password", "error.password", "Password must contain at least 8 characters, one uppercase letter, one symbol, and one number.");
         }
         
@@ -133,11 +140,22 @@ public class UserController {
      * @throws Exception If an error occurs during deletion.
      */
     @DeleteMapping("/user/delete/{id}")
-    public String deleteUser(@PathVariable("id") Integer id, Model model) throws Exception {
-        log.info("Calling GET /user/delete/{} with id: {}", id);
+    public String deleteUser(@PathVariable("id") Integer id, Model model, @AuthenticationPrincipal UserDetails userDetails) throws Exception {
 
-        userService.deleteUserById(id);
-        model.addAttribute("users", userService.findAll());
-        return "redirect:/user/list";
+    	User user = userService.findById(id); 
+
+        if (userDetails.getUsername().equals(user.getUsername())) {
+        	userService.disableUser(user.getUsername());
+        	userService.deleteUserById(id);
+        	sessionService.logoutUser(userDetails);
+        	return "redirect:/login";
+        }
+        else {
+        	userService.deleteUserById(id);
+            model.addAttribute("users", userService.findAll());
+            return "redirect:/user/list";
+        }
+        		
+
     }
 }

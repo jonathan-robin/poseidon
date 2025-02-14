@@ -9,12 +9,24 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.nnk.springboot.services.CustomUserDetailsService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+;
 
 /**
  * Configuration class for Spring Security settings in the application.
@@ -26,7 +38,13 @@ public class SecurityConfig {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
-
+    
+//    @Autowired
+//    private CustomAuthenticationSuccessHandler successHandler;
+//
+//    @Autowired
+//    private CustomLogoutSuccessHandler logoutSuccessHandler;
+// 
     /**
      * Bean for AuthenticationManager used for authenticating users.
      * 
@@ -53,16 +71,20 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    	
         http
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/", "/login", "/app/login", "/app/error").permitAll()  // Permit all users to access these paths
-                .requestMatchers("/user/*").hasAuthority("ROLE_ADMIN")  // Only allow users with "ROLE_ADMIN" to access user-related pages
+                .requestMatchers("/", "/login", "/app/login", "/app/error", "/user/*").permitAll()  // Permit all users to access these paths
+//                .requestMatchers("/user/*").hasAuthority("ROLE_ADMIN")  // Only allow users with "ROLE_ADMIN" to access user-related pages
                 .anyRequest().authenticated()  // Require authentication for any other request
             )
             .formLogin((formLogin) -> formLogin
+//            	.successHandler(successHandler)
                 .defaultSuccessUrl("/bidList/list", true)  // Redirect to the bid list on successful login
             )
-            .logout((logout) -> logout.permitAll()
+            .logout((logout) -> logout
+//            	.logoutSuccessHandler(logoutSuccessHandler) 	
+            	.permitAll()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/app-logout"))  // Specify the logout URL
                 .logoutSuccessUrl("/")  // Redirect to home page on logout success
                 .invalidateHttpSession(true)  // Invalidate the session on logout
@@ -98,4 +120,7 @@ public class SecurityConfig {
             .ignoring()
             .requestMatchers("/css/**");  // Allow access to static resources in the "/css" directory without authentication
     }
+    
+
+    
 }

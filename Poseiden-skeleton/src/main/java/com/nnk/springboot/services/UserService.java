@@ -1,7 +1,9 @@
 package com.nnk.springboot.services;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -98,5 +100,17 @@ public class UserService {
 	}
 
 	
+    private final Map<String, Boolean> disabledUsers = new ConcurrentHashMap<>();
 
+    public void disableUser(String username) {
+        disabledUsers.put(username, true);
+    }
+
+    public void enableUser(String username) {
+        disabledUsers.remove(username);
+    }
+
+    public boolean isUserEnabled(String username) {
+        return !disabledUsers.getOrDefault(username, false);
+    }
 }

@@ -31,6 +31,8 @@ public class CustomUserDetails implements UserDetails {
      */
     private String password;
     
+    private boolean enabled;
+    
     /**
      * The list of authorities (roles) granted to the user.
      */
@@ -95,6 +97,10 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+    
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     /**
      * Retrieves the authorities (roles) granted to the user.
@@ -104,5 +110,12 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public java.util.Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
+    }
+    
+    public CustomUserDetails(String username, String password, List<GrantedAuthority> authorities, boolean enabled) {
+        this.username = username;
+        this.password = password;
+        this.authorities = authorities;
+        this.enabled = enabled;
     }
 }
