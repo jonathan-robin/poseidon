@@ -60,12 +60,12 @@ public class Rating {
      */
     @Column(name="orderNumber")
     @NotNull(message= "Order Number is mandatory")
-    @Min(value = -128, message = "Order Number must be at least -128")
     /*
-      un-comment if orderId can't be negative
-	  @Positive(message="Order Id can't be negative")
+      un-comment if orderId could be negative
+	  @Min(value = -128, message = "Order Number must be at least -128")
      */
     @Max(value = 127, message = "Order Number must be at most 127")
+    @Positive(message="OrderNumber can't be negative")
     private Integer orderNumber;
     
     /**

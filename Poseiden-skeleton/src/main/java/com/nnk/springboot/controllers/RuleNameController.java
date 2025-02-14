@@ -83,18 +83,15 @@ public class RuleNameController {
         log.info("call to POST /ruleName/validate with {}", ruleName.toString());
 
         if (result.hasErrors()) {
-            log.info("errors: {}", result.getAllErrors());
-            return "ruleName/add";
+            model.addAttribute("error", true); 
+            model.addAttribute("message", result.getAllErrors());
+            return "ruleName/add";  
         }
-        else if (ruleName.getName() == null || ruleName.getName().isEmpty()) {
-            log.info("name can't be null");
-            return "ruleName/add";
-        }
-
+        
         ruleNameService.saveRuleName(ruleName);
         List<RuleName> ruleNames = ruleNameService.findAllRuleNames();
         model.addAttribute("ruleNames", ruleNames);
-        return "ruleName/list";  // Rediriger vers la liste si tout va bien
+        return "ruleName/list";
     }
 
     /**
@@ -131,19 +128,18 @@ public class RuleNameController {
     @PostMapping("/ruleName/update/{id}")
     public String updateRating(@PathVariable("id") Integer id, @Valid RuleName ruleName,
                               BindingResult result, Model model) throws Exception {
-        if (result.hasErrors()) 
-            return null;
-
-        if (ruleName.getDescription() != null && ruleName.getJson() != null  
-            && ruleName.getName() != null && ruleName.getSqlPart() != null
-            && ruleName.getSqlStr() != null && ruleName.getTemplate() != null) { 
-            ruleNameService.updateRuleName(ruleName);
-            List<RuleName> ruleNames = ruleNameService.findAllRuleNames();
-            model.addAttribute("ruleNames", ruleNames);
-            return "redirect:/ruleName/list";
-        } else { 
-            throw new Exception("Error in form, can't update ruleName.");
+        
+    	if (result.hasErrors()) {
+            model.addAttribute("error", true); 
+            model.addAttribute("message", result.getAllErrors());
+            return "ruleName/update";  
         }
+
+        ruleNameService.updateRuleName(ruleName);
+        List<RuleName> ruleNames = ruleNameService.findAllRuleNames();
+        model.addAttribute("ruleNames", ruleNames);
+        return "redirect:/ruleName/list";
+        
     }
 
     /**

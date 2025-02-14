@@ -1,6 +1,9 @@
 package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,6 +32,8 @@ public class RuleName {
      * Name of the rule.
      * Mapped to the "name" column in the "rulename" table.
      */
+    @Size(max=125,  message= "Too long, must be 125 characters top")
+    @NotBlank(message = "Name is mandatory")
     @Column(name="name")
     private String name;
     
@@ -36,6 +41,8 @@ public class RuleName {
      * Description of the rule.
      * Mapped to the "description" column in the "rulename" table.
      */
+    @Size(max=125,  message= "Too long, must be 125 characters top")
+    @NotBlank(message = "Description is mandatory")
     @Column(name="description")
     private String description;
     
@@ -43,6 +50,8 @@ public class RuleName {
      * JSON representation of the rule's configuration.
      * Mapped to the "json" column in the "rulename" table.
      */
+    @Size(max=125,  message= "Too long, must be 125 characters top")
+    @NotBlank(message = "Json is mandatory")
     @Column(name="json")
     private String json;
 
@@ -50,6 +59,8 @@ public class RuleName {
      * Template for the rule.
      * Mapped to the "template" column in the "rulename" table.
      */
+    @Size(max=512,  message= "Too long, must be 512 characters top")
+    @NotBlank(message = "template is mandatory")
     @Column(name="template")
     private String template;
     
@@ -57,6 +68,8 @@ public class RuleName {
      * SQL statement associated with the rule.
      * Mapped to the "sqlStr" column in the "rulename" table.
      */
+    @Size(max=125,  message= "Too long, must be 125 characters top")
+    @NotBlank(message = "sqlStr is mandatory")
     @Column(name="sqlStr")
     private String sqlStr;
     
@@ -64,6 +77,8 @@ public class RuleName {
      * SQL fragment used in the rule.
      * Mapped to the "sqlPart" column in the "rulename" table.
      */
+    @Size(max=125,  message= "Too long, must be 125 characters top")
+    @NotBlank(message = "sqlPart is mandatory")
     @Column(name="sqlPart")
     private String sqlPart;
     

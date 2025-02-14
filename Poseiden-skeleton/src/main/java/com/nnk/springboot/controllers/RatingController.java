@@ -136,15 +136,11 @@ public class RatingController {
             return "rating/update";  
         }
 
-        if (rating.getFitchRating() != null && rating.getMoodysRating() != null 
-            && rating.getSandPRating() != null && rating.getOrderNumber() > 0) { 
-            ratingService.updateRating(rating);
-            List<Rating> ratings = ratingService.findAllRatings();
-            model.addAttribute("ratings", ratings);
-            return "redirect:/rating/list";
-        } else { 
-            throw new Exception("Error in form, can't update rating.");
-        }
+        ratingService.updateRating(rating);
+        List<Rating> ratings = ratingService.findAllRatings();
+        model.addAttribute("ratings", ratings);
+        return "redirect:/rating/list";
+
     }
 
     /**

@@ -77,30 +77,11 @@ public class RuleNameService {
     public RuleName updateRuleName(RuleName ruleName) throws Exception { 
         
         Optional<RuleName> opt = ruleNameRepository.findById(ruleName.getId());
-        Map<String, String> tmpUpdates = new HashMap<>();
-        if (opt.isPresent()) { 
-            RuleName old = opt.get();
-
-            for (Field field : RuleName.class.getDeclaredFields()) {
-                field.setAccessible(true);
-                try {
-                    Object originalValue = field.get(old);
-                    Object updatedValue = field.get(ruleName);
-
-                    if (!Objects.equals(originalValue, updatedValue)) {
-                        tmpUpdates.put(field.toString(), updatedValue.toString());
-                        field.set(old, updatedValue);
-                    }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-            log.info("Updating ruleName id: {} with updates {}", ruleName.getId(), tmpUpdates);
-            ruleNameRepository.save(old);
-            return findById(old.getId());
-        }
-        else 
+       
+        if (opt.isEmpty()) 
             throw new Exception("Can't find current Bid");
+        
+        return ruleNameRepository.save(ruleName);
     }
     
     /**
