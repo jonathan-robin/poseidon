@@ -81,9 +81,6 @@ public class RatingController {
     @PostMapping("/rating/validate")
     public String validate(@Valid Rating rating, BindingResult result, Model model) {
         log.info("call to POST /rating/validate with {}", rating.toString());
-
-        if (rating.getOrderNumber() < 0)
-            result.rejectValue("orderNumber", "error.orderNumber", "orderNumber cannot be negative...");
         
         if (result.hasErrors()) {
             model.addAttribute("error", true); 
@@ -132,9 +129,6 @@ public class RatingController {
     @PostMapping("/rating/update/{id}")
     public String updateRating(@PathVariable("id") Integer id, @Valid Rating rating,
                              BindingResult result, Model model) throws Exception {
-    	
-        if (rating.getOrderNumber() < 0)
-            result.rejectValue("orderNumber", "error.orderNumber", "orderNumber cannot be negative...");
         
         if (result.hasErrors()) {
             model.addAttribute("error", true); 

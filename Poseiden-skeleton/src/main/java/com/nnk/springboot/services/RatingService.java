@@ -77,31 +77,12 @@ public class RatingService {
     public Rating updateRating(Rating rating) throws Exception { 
         
         Optional<Rating> optRating = ratingRepository.findById(rating.getId());
-        Map<String, String> tmpUpdates = new HashMap<>();
         
-        if (optRating.isPresent()) { 
-            Rating oldRating = optRating.get();
+        if (optRating.isEmpty())
+            throw new Exception("Can't find current rating");
 
-            for (Field field : Rating.class.getDeclaredFields()) {
-                field.setAccessible(true);
-                try {
-                    Object originalValue = field.get(oldRating);
-                    Object updatedValue = field.get(rating);
+        return ratingRepository.save(rating);
 
-                    if (!Objects.equals(originalValue, updatedValue)) {
-                        tmpUpdates.put(field.toString(), updatedValue.toString());
-                        field.set(oldRating, updatedValue);
-                    }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-            log.info("Updating rating id: {} with updates {}", rating.getId(), tmpUpdates);
-            ratingRepository.save(oldRating);
-            return findById(oldRating.getId());
-        }
-        else 
-            throw new Exception("Can't find current Bid");
     }
     
     /**

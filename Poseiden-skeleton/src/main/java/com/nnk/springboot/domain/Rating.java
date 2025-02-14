@@ -1,6 +1,9 @@
 package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -56,7 +59,13 @@ public class Rating {
      * Mapped to the "orderNumber" column in the "rating" table.
      */
     @Column(name="orderNumber")
-    @Positive(message = "CurveId must be a postive double")
+    @NotNull(message= "Order Number is mandatory")
+    @Min(value = -128, message = "Order Number must be at least -128")
+    /*
+      un-comment if orderId can't be negative
+	  @Positive(message="Order Id can't be negative")
+     */
+    @Max(value = 127, message = "Order Number must be at most 127")
     private Integer orderNumber;
     
     /**
