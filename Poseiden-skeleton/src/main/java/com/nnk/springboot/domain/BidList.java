@@ -169,6 +169,7 @@ public class BidList {
      * The date the bid was revised.
      */
     @Column(name="revisionDate")
+    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp revisionDate;
 
     /**
