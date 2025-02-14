@@ -44,7 +44,7 @@
 					<td th:text="${trade.buyQuantity}"></td>
 					<td style="width: 15%" class="text-center">
 						<a th:href="@{/trade/update/{id}(id=${trade.tradeId})}">Edit</a>&nbsp;|&nbsp;
-						<form th:action="@{/trade/delete/{id}(id=${trade.id})}" th:method="delete">
+						<form th:action="@{/trade/delete/{id}(id=${trade.tradeId})}" th:method="delete">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
 					</td>
