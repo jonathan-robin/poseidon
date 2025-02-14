@@ -75,7 +75,7 @@ public class BidListService {
 	/**
 	 * <p>Method to update a bidList</p>
 	 * <p>It searches for the bidList in DB in case we don't find it throw exception </p>
-	 * <p>It goes through all the modification that had been done, apply it then save the bidList </p>
+	 * <p>save new BidList </p>
 	 * @param The BidList to save (BidList)
 	 * @return The saved BidList
 	 * @throw New Exception (in case we don't find by id)

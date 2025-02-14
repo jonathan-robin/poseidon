@@ -74,31 +74,11 @@ public class CurveService {
     public CurvePoint updateCurvePoint(CurvePoint curvePoint) throws Exception {
 
         Optional<CurvePoint> optCurve = curveRepository.findById(curvePoint.getId());
-        Map<String, String> tmpUpdates = new HashMap<>();
+        
+		if (optCurve.isEmpty())
+			throw new Exception("Can't find current CurvePoint");
 
-        if (optCurve.isPresent()) {
-            CurvePoint curve = optCurve.get();
-
-            for (Field field : CurvePoint.class.getDeclaredFields()) {
-                field.setAccessible(true);
-                try {
-                    Object originalValue = field.get(curve);
-                    Object updatedValue = field.get(curvePoint);
-
-                    if (!Objects.equals(originalValue, updatedValue)) {
-                        tmpUpdates.put(field.getName(), updatedValue != null ? updatedValue.toString() : "null");
-                        field.set(curve, updatedValue);
-                    }
-                } catch (IllegalAccessException e) {
-                    log.error("Error updating field: {}", field.getName(), e);
-                }
-            }
-            log.info("Updating Curve id: {} with updates {}", curve.getId(), tmpUpdates);
-            curveRepository.save(curve);
-            return findById(curve.getId());
-        } else {
-            throw new Exception("Can't find current CurvePoint");
-        }
+		return curveRepository.save(curvePoint);	
     }
 
     /**
