@@ -2,6 +2,7 @@ package com.nnk.springboot.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +19,7 @@ public class HomeController {
      * @param model the model to add attributes to the view
      * @return the view name for the home page
      */
-    @RequestMapping("/")
+    @GetMapping("/")
     public String home(Model model) {
         log.info("Calling GET /");
         return "home";
@@ -30,7 +31,7 @@ public class HomeController {
      * @param model the model to add attributes to the view
      * @return the redirection to the bid list page
      */
-    @RequestMapping("/admin/home")
+    @GetMapping("/admin/home")
     public String adminHome(Model model) {
         log.info("Calling GET /admin/home - Redirecting to /bidList/list");
         return "redirect:/bidList/list";

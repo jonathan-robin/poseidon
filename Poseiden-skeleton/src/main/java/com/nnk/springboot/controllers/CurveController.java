@@ -11,9 +11,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,7 +51,7 @@ public class CurveController {
      * @param request the HTTP request
      * @return the view name for the curve point list
      */
-    @RequestMapping("/curvePoint/list")
+    @GetMapping("/curvePoint/list")
     public String home(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
         String remoteUser = request.getRemoteUser();
         log.info("Calling GET /curvePoint/list, remoteUser: {}", remoteUser);
@@ -131,7 +133,7 @@ public class CurveController {
      * @return the view name for the list of curve points
      * @throws Exception if the update fails
      */
-    @PostMapping("/curvePoint/update/{id}")
+    @PutMapping("/curvePoint/update/{id}")
     public String updateBid(@PathVariable("id") Integer id, @jakarta.validation.Valid CurvePoint curvePoint,
                              BindingResult result, Model model) throws Exception {
         log.info("Calling POST /curvePoint/update/{} with {}", id, curvePoint);
@@ -163,7 +165,7 @@ public class CurveController {
      * @return the view name for the list of curve points
      */
     @Transactional
-    @GetMapping("/curvePoint/delete/{id}")
+    @DeleteMapping("/curvePoint/delete/{id}")
     public String deleteCurvePoint(@PathVariable("id") Integer id, Model model) {
         log.info("Calling GET /curvePoint/delete/{}", id);
         try {    

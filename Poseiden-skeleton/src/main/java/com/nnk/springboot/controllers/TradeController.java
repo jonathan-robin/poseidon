@@ -11,9 +11,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,7 +51,7 @@ public class TradeController {
      * @param request the HTTP request
      * @return the view name for displaying the trade list
      */
-    @RequestMapping("/trade/list")
+    @GetMapping("/trade/list")
     public String home(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
     	log.info("call to GET /trade/list");
         String remoteUser = request.getRemoteUser();
@@ -127,7 +129,7 @@ public class TradeController {
      * @return the view name for redirecting to the trade list after update
      * @throws Exception if there is an error in the form submission
      */
-    @PostMapping("/trade/update/{id}")
+    @PutMapping("/trade/update/{id}")
     public String updateRating(@PathVariable("id") Integer id, @jakarta.validation.Valid Trade trade,
                                BindingResult result, Model model) throws Exception {
         log.info("Calling GET /trade/update/{} with {}", id, trade.toString());
@@ -153,7 +155,7 @@ public class TradeController {
      * @return the view name for redirecting to the trade list after deletion
      */
     @Transactional
-    @GetMapping("/trade/delete/{id}")
+    @DeleteMapping("/trade/delete/{id}")
     public String deleteRating(@PathVariable("id") Integer id, Model model) {
         log.info("Calling GET /trade/delete/{}", id);
         try {

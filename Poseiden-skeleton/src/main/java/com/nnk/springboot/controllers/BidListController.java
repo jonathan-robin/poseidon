@@ -12,10 +12,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -129,10 +131,10 @@ public class BidListController {
      * @return the view name for the list of bid lists
      * @throws Exception if the update fails
      */
-    @PostMapping("/bidList/update/{id}")
+    @PutMapping("/bidList/update/{id}")
     public String updateBid(@PathVariable("id") Integer id, @jakarta.validation.Valid BidList bidList,
                              BindingResult result, Model model) throws Exception {
-        log.info("Calling POST /bidList/update/{} with {}", id, bidList);
+        log.info("Calling PUT /bidList/update/{} with {}", id, bidList);
 
         if (result.hasErrors()) {
             model.addAttribute("error", true); 
@@ -162,7 +164,7 @@ public class BidListController {
      * @return the view name for the list of bid lists
      */
     @Transactional
-    @GetMapping("/bidList/delete/{id}")
+    @DeleteMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
         log.info("Calling GET /bidList/delete/{}", id);
         try {    

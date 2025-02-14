@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -39,7 +40,8 @@ public class CurvePoint {
     /**
      * The ID of the associated curve for this curve point.
      */
-    @Positive(message = "CurveId must be a postive double")
+    @Max(value = 127, message = "Order Number must be at most 127")
+    @Positive(message="OrderNumber can't be negative")
     @NotNull(message = "Curve point Id is mandatory")
     @Column(name="curveId")
     private Integer curveId;

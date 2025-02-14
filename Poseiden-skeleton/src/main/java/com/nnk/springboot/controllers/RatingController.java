@@ -11,9 +11,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,7 +50,7 @@ public class RatingController {
      * @param request the HTTP request to get the remote user
      * @return the view displaying the list of ratings
      */
-    @RequestMapping("/rating/list")
+    @GetMapping("/rating/list")
     public String home(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
         log.info("Calling GET /rating/list");
         String remoteUser = request.getRemoteUser();
@@ -127,7 +129,7 @@ public class RatingController {
      * @return the updated list of ratings
      * @throws Exception if the form data is invalid
      */
-    @PostMapping("/rating/update/{id}")
+    @PutMapping("/rating/update/{id}")
     public String updateRating(@PathVariable("id") Integer id, @Valid Rating rating,
                              BindingResult result, Model model) throws Exception {
         
@@ -152,7 +154,7 @@ public class RatingController {
      * @return the updated list of ratings
      */
     @Transactional
-    @GetMapping("/rating/delete/{id}")
+    @DeleteMapping("/rating/delete/{id}")
     public String deleteRating(@PathVariable("id") Integer id, Model model) {
         log.info("Calling GET /rating/delete/{}", id);
         try { 

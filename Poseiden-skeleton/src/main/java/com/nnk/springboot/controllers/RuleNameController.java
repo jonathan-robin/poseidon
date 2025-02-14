@@ -11,9 +11,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,7 +50,7 @@ public class RuleNameController {
      * @param request the HTTP request to get the remote user
      * @return the view displaying the list of rule names
      */
-    @RequestMapping("/ruleName/list")
+    @GetMapping("/ruleName/list")
     public String home(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
         log.info("Calling GET /ruleName/list");
         String remoteUser = request.getRemoteUser();
@@ -126,7 +128,7 @@ public class RuleNameController {
      * @return the updated list of rule names
      * @throws Exception if the form data is invalid
      */
-    @PostMapping("/ruleName/update/{id}")
+    @PutMapping("/ruleName/update/{id}")
     public String updateRating(@PathVariable("id") Integer id, @Valid RuleName ruleName,
                               BindingResult result, Model model) throws Exception {
         
@@ -151,7 +153,7 @@ public class RuleNameController {
      * @return the updated list of rule names
      */
     @Transactional
-    @GetMapping("/ruleName/delete/{id}")
+    @DeleteMapping("/ruleName/delete/{id}")
     public String deleteRating(@PathVariable("id") Integer id, Model model) {
         log.info("Calling GET /ruleName/delete/{}", id);
         try {    
