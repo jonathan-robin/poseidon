@@ -1,7 +1,15 @@
 package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
 import java.sql.Timestamp;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,6 +38,8 @@ public class Trade {
      * Account associated with the trade.
      * Mapped to the "account" column in the "trade" table.
      */
+    @NotBlank(message="Account is mandatory")
+    @Size(max=30, message= "Too long, must be 30 characters top")
     @Column(name="account")
     private String account;
     
@@ -37,6 +47,8 @@ public class Trade {
      * Type of the trade (e.g., Buy/Sell).
      * Mapped to the "type" column in the "trade" table.
      */
+    @NotBlank(message="Type is mandatory")
+    @Size(max=30, message= "Too long, must be 30 characters top")
     @Column(name="type")
     private String type;
     
@@ -44,6 +56,7 @@ public class Trade {
      * Quantity of the asset being bought.
      * Mapped to the "buyQuantity" column in the "trade" table.
      */
+    @NotNull(message="Quantity cannot be null")
     @Column(name="buyQuantity")
     private Double buyQuantity;
 
@@ -52,6 +65,7 @@ public class Trade {
      * Mapped to the "sellQuantity" column in the "trade" table.
      */
     @Column(name="sellQuantity")
+    @Positive(message = "sellQuantity  must be a postive double")
     private Double sellQuantity;
     
     /**
@@ -59,6 +73,7 @@ public class Trade {
      * Mapped to the "buyPrice" column in the "trade" table.
      */
     @Column(name="buyPrice")
+    @Positive(message = "buyPrice  must be a postive double")
     private Double buyPrice;
     
     /**
@@ -66,6 +81,7 @@ public class Trade {
      * Mapped to the "sellPrice" column in the "trade" table.
      */
     @Column(name="sellPrice")
+    @Positive(message = "sellPrice  must be a postive double")
     private Double sellPrice;
     
     /**
@@ -73,6 +89,7 @@ public class Trade {
      * Mapped to the "benchmark" column in the "trade" table.
      */
     @Column(name="benchmark")
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     private String benchmark;
 
     /**
@@ -80,6 +97,7 @@ public class Trade {
      * Mapped to the "tradeDate" column in the "trade" table.
      */
     @Column(name="tradeDate")
+    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp tradeDate;
     
     /**
@@ -87,6 +105,7 @@ public class Trade {
      * Mapped to the "security" column in the "trade" table.
      */
     @Column(name="security")
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     private String security;
     
     /**
@@ -94,6 +113,7 @@ public class Trade {
      * Mapped to the "status" column in the "trade" table.
      */
     @Column(name="status")
+    @Size(max=10,  message= "Too long, must be 10 characters top")
     private String status;
 
     /**
@@ -101,6 +121,7 @@ public class Trade {
      * Mapped to the "trader" column in the "trade" table.
      */
     @Column(name="trader")
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     private String trader;
 
     /**
@@ -108,6 +129,7 @@ public class Trade {
      * Mapped to the "book" column in the "trade" table.
      */
     @Column(name="book")
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     private String book;
     
     /**
@@ -115,13 +137,16 @@ public class Trade {
      * Mapped to the "creationName" column in the "trade" table.
      */
     @Column(name="creationName")
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     private String creationName;
     
     /**
      * Date when the trade was created.
      * Mapped to the "creationDate" column in the "trade" table.
      */
-    @Column(name="creationDate")
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="creationDate", updatable=false, nullable=false)
     private Timestamp creationDate;
    
     /**
@@ -129,6 +154,7 @@ public class Trade {
      * Mapped to the "revisionName" column in the "trade" table.
      */
     @Column(name="revisionName")
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     private String revisionName;
     
     /**
@@ -136,6 +162,7 @@ public class Trade {
      * Mapped to the "revisionDate" column in the "trade" table.
      */
     @Column(name="revisionDate")
+    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp revisionDate;
     
     /**
@@ -143,6 +170,7 @@ public class Trade {
      * Mapped to the "dealName" column in the "trade" table.
      */
     @Column(name="dealName")
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     private String dealName;
 
     /**
@@ -150,6 +178,7 @@ public class Trade {
      * Mapped to the "dealType" column in the "trade" table.
      */
     @Column(name="dealType")
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     private String dealType;
     
     /**
@@ -157,12 +186,14 @@ public class Trade {
      * Mapped to the "sourceListId" column in the "trade" table.
      */
     @Column(name="sourceListId")
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     private String sourceListId;
     
     /**
-     * Side of the trade (e.g., Buy/Sell).
+     * Side of the trade
      * Mapped to the "side" column in the "trade" table.
      */
     @Column(name="side")
+    @Size(max=125,  message= "Too long, must be 125 characters top")
     private String side;
 }
