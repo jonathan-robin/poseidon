@@ -95,7 +95,8 @@ public class BidListController {
             return "bidList/add";  
         }
         
-        List<BidList> bids = bidListService.saveBid(bid);
+        bidListService.saveBid(bid);
+        List<BidList> bids = bidListService.findAllBids();
         model.addAttribute("bidLists", bids);
         return "bidList/list";  
     }
@@ -117,7 +118,7 @@ public class BidListController {
         }
         catch (Exception ex) { 
             log.warn("Exception : {}", ex);
-            return null;
+            return "bidList/update"; 
         }
     }
 

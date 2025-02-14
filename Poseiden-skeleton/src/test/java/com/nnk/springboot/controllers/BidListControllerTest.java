@@ -111,12 +111,8 @@ public class BidListControllerTest {
         bid.setType("type");
         bid.setAccount("account");
 
-        
-        List<BidList> bids = new ArrayList(); 
-        bids.add(bid);
-
         // Stubbing pour matcher n'importe quel objet BidList
-        when(bidListService.saveBid(any(BidList.class))).thenReturn(bids);
+        when(bidListService.saveBid(any(BidList.class))).thenReturn(bid);
 
         mockMvc.perform(post("/bidList/validate")
         		.with(csrf())

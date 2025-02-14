@@ -21,11 +21,11 @@ public class CustomUserDetails implements UserDetails {
      */
     private static final long serialVersionUID = 1L;
     
-    public CustomUserDetails(String username, String password, List<GrantedAuthority> authorities, boolean enabled) {
+    public CustomUserDetails(String username, String password, List<GrantedAuthority> authorities) {
         this.username = username;
         this.password = password;
         this.authorities = authorities;
-        this.enabled = enabled;
+
     }
 
     /**

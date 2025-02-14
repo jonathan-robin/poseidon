@@ -1,7 +1,6 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.User;
-import com.nnk.springboot.services.SessionService;
 import com.nnk.springboot.services.UserService;
 
 import java.util.regex.Pattern;
@@ -30,10 +29,6 @@ public class UserController {
 	
     @Autowired
     private UserService userService;
-    
-    @Autowired
-    private SessionService sessionService;
-
 
 
     /**
@@ -145,10 +140,8 @@ public class UserController {
     	User user = userService.findById(id); 
 
         if (userDetails.getUsername().equals(user.getUsername())) {
-        	userService.disableUser(user.getUsername());
         	userService.deleteUserById(id);
-        	sessionService.logoutUser(userDetails);
-        	return "redirect:/login";
+        	return "redirect:/app-logout";
         }
         else {
         	userService.deleteUserById(id);

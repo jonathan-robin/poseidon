@@ -41,7 +41,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         	throw new UsernameNotFoundException("Invalid credentials");	
 
         return new CustomUserDetails(user.getUsername(),
-                user.getPassword(), getGrantedAuthorities(user.getRole()), userService.isUserEnabled(username));
+                user.getPassword(), getGrantedAuthorities(user.getRole()));
 
     }
 

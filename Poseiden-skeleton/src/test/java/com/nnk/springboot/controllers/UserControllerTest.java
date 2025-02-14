@@ -166,14 +166,11 @@ public class UserControllerTest {
     @WithMockUser
     public void testDeleteUser() throws Exception {
         // Given
-    	CustomUserDetails details = new CustomUserDetails("differentUser", "password", null, false);
+    	CustomUserDetails details = new CustomUserDetails("differentUser", "password", null);
     	when(userDetails.getUsername()).thenReturn("differentUser");
         when(userService.findById(1)).thenReturn(user);
         userController.deleteUser(1, mock(Model.class), details);
-        // When + Then
-//        mockMvc.perform(delete("/user/delete/{id}", 1))
-//               .andExpect(status().is3xxRedirection())
-//               .andExpect(redirectedUrl("/user/list"));
+
         
         verify(userService, times(1)).deleteUserById(1);
 

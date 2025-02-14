@@ -74,16 +74,14 @@ public class SecurityConfig {
     	
         http
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/", "/login", "/app/login", "/app/error", "/user/*").permitAll()  // Permit all users to access these paths
-//                .requestMatchers("/user/*").hasAuthority("ROLE_ADMIN")  // Only allow users with "ROLE_ADMIN" to access user-related pages
+                .requestMatchers("/", "/login", "/app/login", "/app/error", "/user").permitAll()  // Permit all users to access these paths
+                .requestMatchers("/user/*").hasAuthority("ROLE_ADMIN")  // Only allow users with "ROLE_ADMIN" to access user-related pages
                 .anyRequest().authenticated()  // Require authentication for any other request
             )
             .formLogin((formLogin) -> formLogin
-//            	.successHandler(successHandler)
                 .defaultSuccessUrl("/bidList/list", true)  // Redirect to the bid list on successful login
             )
             .logout((logout) -> logout
-//            	.logoutSuccessHandler(logoutSuccessHandler) 	
             	.permitAll()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/app-logout"))  // Specify the logout URL
                 .logoutSuccessUrl("/")  // Redirect to home page on logout success

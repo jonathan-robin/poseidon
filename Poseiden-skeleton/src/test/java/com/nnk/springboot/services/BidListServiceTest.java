@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -59,17 +60,12 @@ class BidListServiceTest {
 
     @Test
     void testSaveBid() {
-        // Arrange
         when(bidListRepository.save(any(BidList.class))).thenReturn(bid1);
-        when(bidListRepository.findAll()).thenReturn(Arrays.asList(bid1));
 
-        // Act
-        List<BidList> savedBids = bidListService.saveBid(bid1);
+        BidList savedBids = bidListService.saveBid(bid1);
 
-        // Assert
-        assertThat(savedBids).hasSize(1);
+        assertNotNull(savedBids);
         verify(bidListRepository, times(1)).save(any(BidList.class));
-        verify(bidListRepository, times(1)).findAll();
     }
 
     @Test

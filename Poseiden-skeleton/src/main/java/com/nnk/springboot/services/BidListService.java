@@ -40,7 +40,7 @@ public class BidListService {
 	 * @return List<BidList> all the bidList we have in DB
 	 * @since 1.0
 	 */
-	public List<BidList> saveBid(BidList bid){ 
+	public BidList saveBid(BidList bid){ 
     	
     	BidList newBid = new BidList(); 
     	newBid.setAccount(bid.getAccount()); 
@@ -48,9 +48,9 @@ public class BidListService {
     	newBid.setBidQuantity(bid.getBidQuantity());
     	
     	log.info("Saving new Bid {}...", newBid);
-    	bidListRepository.save(newBid);
+    	return bidListRepository.save(newBid);
     	
-    	return this.findAllBids();
+    	
 	}
 	
 	/**
