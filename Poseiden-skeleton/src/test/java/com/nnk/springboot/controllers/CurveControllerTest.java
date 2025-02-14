@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -99,7 +101,7 @@ public class CurveControllerTest {
         
         when(curveService.findById(1)).thenReturn(curvePointToUpdate);
 
-        mockMvc.perform(post("/curvePoint/update/{id}", curvePointToUpdate.getId())
+        mockMvc.perform(put("/curvePoint/update/{id}", curvePointToUpdate.getId())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("curveId", String.valueOf(curvePointToUpdate.getCurveId()))
                 .param("term", String.valueOf(curvePointToUpdate.getTerm()))
@@ -112,10 +114,15 @@ public class CurveControllerTest {
     @WithMockUser
     public void testDeleteCurvePoint() throws Exception {
         // Supposons qu'il existe un CurvePoint avec l'ID 1
-        int curvePointId = 1;
+        CurvePoint curvePointToUpdate = new CurvePoint();
+        curvePointToUpdate.setCurveId(1);  // Exemple d'ID pour mettre à jour
+        curvePointToUpdate.setTerm(5D);
+        curvePointToUpdate.setId(1);
+        curvePointToUpdate.setValue(150.75);
+        
+        when(curveService.findById(1)).thenReturn(curvePointToUpdate);
 
-        mockMvc.perform(get("/curvePoint/delete/{id}", curvePointId))
-                .andExpect(status().is3xxRedirection())  // Vérifie la redirection (code 302)
+        mockMvc.perform(delete("/curvePoint/delete/{id}", 1).with(csrf()))
                 .andExpect(redirectedUrl("/curvePoint/list"));  // Vérifie la redirection vers la liste après suppression
     }
 

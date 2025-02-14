@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
@@ -132,7 +133,7 @@ public class UserControllerTest {
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         // When + Then : Simulation de la soumission du formulaire
-        mockMvc.perform(post("/user/update/{id}", 15)
+        mockMvc.perform(put("/user/update/{id}", 15)
                 .param("username", "updatedUser")  // Données valides
                 .param("password", "abcdefghi1!*P") 
                 .param("fullname", "updatedFullName")// Données valides
@@ -149,7 +150,7 @@ public class UserControllerTest {
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
 
         // When + Then
-        mockMvc.perform(post("/user/update/{id}", 1)
+        mockMvc.perform(put("/user/update/{id}", 1)
                         .param("username", "")
                         .param("password", ""))
                .andExpect(status().isOk())
@@ -162,7 +163,7 @@ public class UserControllerTest {
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
 
         // When + Then
-        mockMvc.perform(get("/user/delete/{id}", 1))
+        mockMvc.perform(delete("/user/delete/{id}", 1))
                .andExpect(status().is3xxRedirection())
                .andExpect(redirectedUrl("/user/list"));
     }

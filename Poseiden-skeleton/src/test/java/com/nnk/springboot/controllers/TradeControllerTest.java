@@ -18,6 +18,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -74,7 +76,7 @@ public class TradeControllerTest {
         trade.setTradeId(1);
         when(tradeService.findById(1)).thenReturn(trade);
 
-        mockMvc.perform(get("/trade/update/{id}", 1))
+        mockMvc.perform(put("/trade/update/{id}", 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("trade/update"))
                 .andExpect(model().attribute("trade", trade));
@@ -90,7 +92,7 @@ public class TradeControllerTest {
 
         when(tradeService.findById(1)).thenReturn(trade);
 
-        mockMvc.perform(post("/trade/update/{id}", 1)
+        mockMvc.perform(put("/trade/update/{id}", 1)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("account", "Updated Account")
                 .param("type", "Updated Type")
@@ -105,7 +107,7 @@ public class TradeControllerTest {
     @Test
     @WithMockUser
     public void testDeleteTrade() throws Exception {
-        mockMvc.perform(get("/trade/delete/{id}", 1))
+        mockMvc.perform(delete("/trade/delete/{id}", 1))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/trade/list"));
 

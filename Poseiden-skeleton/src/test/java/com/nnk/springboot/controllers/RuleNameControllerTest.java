@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -84,7 +86,7 @@ public class RuleNameControllerTest {
         validRuleName.setId(1);
         when(ruleNameService.findById(1)).thenReturn(validRuleName);
 
-        mockMvc.perform(get("/ruleName/update/{id}", 1))
+        mockMvc.perform(put("/ruleName/update/{id}", 1))
                 .andExpect(status().isOk())  // Vérifie que la réponse HTTP est 200 OK
                 .andExpect(view().name("ruleName/update"))  // Vérifie que la vue est "ruleName/update"
                 .andExpect(model().attribute("ruleName", validRuleName));  // Vérifie que l'objet "ruleName" est présent dans le modèle
@@ -101,7 +103,7 @@ public class RuleNameControllerTest {
 
         when(ruleNameService.findById(any(Integer.class))).thenReturn(ruleNameToUpdate);
 
-        mockMvc.perform(post("/ruleName/update/{id}", 1)
+        mockMvc.perform(put("/ruleName/update/{id}", 1)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", ruleNameToUpdate.getName())
                 .param("description", ruleNameToUpdate.getDescription())
@@ -122,7 +124,7 @@ public class RuleNameControllerTest {
         // Supposons qu'il existe un RuleName avec l'ID 1
         int ruleNameId = 1;
 
-        mockMvc.perform(get("/ruleName/delete/{id}", ruleNameId))
+        mockMvc.perform(delete("/ruleName/delete/{id}", ruleNameId))
                 .andExpect(status().is3xxRedirection())  // Vérifie la redirection après suppression
                 .andExpect(redirectedUrl("/ruleName/list"));  // Vérifie la redirection vers la liste après suppression
 

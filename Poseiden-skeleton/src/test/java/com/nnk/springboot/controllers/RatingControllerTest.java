@@ -17,6 +17,8 @@ import org.springframework.validation.BindingResult;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -92,7 +94,7 @@ public class RatingControllerTest {
         Rating validRating = new Rating("Fitch", "AAA", "A", 1);
         when(ratingService.findById(1)).thenReturn(validRating);
 
-        mockMvc.perform(get("/rating/update/{id}", 1))
+        mockMvc.perform(put("/rating/update/{id}", 1))
                 .andExpect(status().isOk())  // Vérifie que la réponse HTTP est 200 OK
                 .andExpect(view().name("rating/update"))  // Vérifie que la vue est "rating/update"
                 .andExpect(model().attribute("rating", validRating));  // Vérifie que l'objet "rating" est présent dans le modèle
@@ -112,7 +114,7 @@ public class RatingControllerTest {
         
         when(ratingService.findById(any(Integer.class))).thenReturn(ratingToUpdate);
         
-        mockMvc.perform(post("/rating/update/{id}", 1)
+        mockMvc.perform(put("/rating/update/{id}", 1)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("fitchRating", ratingToUpdate.getFitchRating())
                 .param("moodysRating", ratingToUpdate.getMoodysRating())
@@ -131,7 +133,7 @@ public class RatingControllerTest {
         
         int ratingId = 1;
 
-        mockMvc.perform(get("/rating/delete/{id}", ratingId))
+        mockMvc.perform(delete("/rating/delete/{id}", ratingId))
                 .andExpect(status().is3xxRedirection())  
                 .andExpect(redirectedUrl("/rating/list")); 
         
