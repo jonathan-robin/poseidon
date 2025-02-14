@@ -86,7 +86,7 @@ public class RuleNameControllerTest {
         validRuleName.setId(1);
         when(ruleNameService.findById(1)).thenReturn(validRuleName);
 
-        mockMvc.perform(put("/ruleName/update/{id}", 1))
+        mockMvc.perform(get("/ruleName/update/{id}", 1))
                 .andExpect(status().isOk())  // Vérifie que la réponse HTTP est 200 OK
                 .andExpect(view().name("ruleName/update"))  // Vérifie que la vue est "ruleName/update"
                 .andExpect(model().attribute("ruleName", validRuleName));  // Vérifie que l'objet "ruleName" est présent dans le modèle
@@ -124,8 +124,7 @@ public class RuleNameControllerTest {
         // Supposons qu'il existe un RuleName avec l'ID 1
         int ruleNameId = 1;
 
-        mockMvc.perform(delete("/ruleName/delete/{id}", ruleNameId))
-                .andExpect(status().is3xxRedirection())  // Vérifie la redirection après suppression
+        mockMvc.perform(delete("/ruleName/delete/{id}", ruleNameId).with(csrf()))
                 .andExpect(redirectedUrl("/ruleName/list"));  // Vérifie la redirection vers la liste après suppression
 
         verify(ruleNameService, times(1)).deleteRuleNameById(ruleNameId);

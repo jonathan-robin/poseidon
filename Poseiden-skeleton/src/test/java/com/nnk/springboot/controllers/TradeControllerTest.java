@@ -36,6 +36,9 @@ public class TradeControllerTest {
     @WithMockUser
     public void testListTrades() throws Exception {
         Trade trade = new Trade();
+        trade.setAccount("account test");
+        trade.setBuyQuantity(1D);
+        trade.setType("type test");
         when(tradeService.findAllTrades()).thenReturn(Arrays.asList(trade));
 
         mockMvc.perform(get("/trade/list"))
@@ -76,7 +79,7 @@ public class TradeControllerTest {
         trade.setTradeId(1);
         when(tradeService.findById(1)).thenReturn(trade);
 
-        mockMvc.perform(put("/trade/update/{id}", 1))
+        mockMvc.perform(get("/trade/update/{id}", 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("trade/update"))
                 .andExpect(model().attribute("trade", trade));
@@ -107,7 +110,7 @@ public class TradeControllerTest {
     @Test
     @WithMockUser
     public void testDeleteTrade() throws Exception {
-        mockMvc.perform(delete("/trade/delete/{id}", 1))
+        mockMvc.perform(delete("/trade/delete/{id}", 1).with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/trade/list"));
 

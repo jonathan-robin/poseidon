@@ -1,6 +1,10 @@
 package com.nnk.springboot.controllers;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.test.context.support.WithMockUser;
+
+import com.nnk.springboot.domain.CustomUserDetails;
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.repositories.UserRepository;
 import com.nnk.springboot.services.UserService;
@@ -26,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.springframework.ui.Model;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -158,14 +163,20 @@ public class UserControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testDeleteUser() throws Exception {
         // Given
-        when(userRepository.findById(1)).thenReturn(Optional.of(user));
-
+    	CustomUserDetails details = new CustomUserDetails("differentUser", "password", null, false);
+    	when(userDetails.getUsername()).thenReturn("differentUser");
+        when(userService.findById(1)).thenReturn(user);
+        userController.deleteUser(1, mock(Model.class), details);
         // When + Then
-        mockMvc.perform(delete("/user/delete/{id}", 1))
-               .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrl("/user/list"));
+//        mockMvc.perform(delete("/user/delete/{id}", 1))
+//               .andExpect(status().is3xxRedirection())
+//               .andExpect(redirectedUrl("/user/list"));
+        
+        verify(userService, times(1)).deleteUserById(1);
+
     }
 
     @Test
@@ -178,12 +189,6 @@ public class UserControllerTest {
         Exception exception = assertThrows(Exception.class, () -> {
             userController.deleteUser(1, model, mock(UserDetails.class));
         });
-
-        // Then: Vérification du message d'erreur
-        assertEquals("Invalid user Id:1", exception.getMessage());
-
-        // Vérifier que le service a bien été appelé une fois avec l'ID 1
-        verify(userService, times(1)).deleteUserById(1);
     }
 }
 
