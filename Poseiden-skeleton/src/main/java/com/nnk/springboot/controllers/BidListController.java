@@ -4,6 +4,7 @@ import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.services.BidListService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,7 +50,7 @@ public class BidListController {
      * @param request the HTTP request
      * @return the view name for the bid list
      */
-    @RequestMapping("/bidList/list")
+    @GetMapping("/bidList/list")
     public String home(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
         String remoteUser = request.getRemoteUser();
         log.info("Calling GET /bidList/list, remoteUser: {}", remoteUser);
@@ -81,11 +83,9 @@ public class BidListController {
      * @return the view name for the list of bid lists
      */
     @PostMapping("/bidList/validate")
-    public String validate(@jakarta.validation.Valid BidList bid, @AuthenticationPrincipal UserDetails userDetails, BindingResult result, Model model) {
+    public String validate(@ModelAttribute @jakarta.validation.Valid BidList bid, @AuthenticationPrincipal UserDetails userDetails, BindingResult result, Model model) {
         log.info("Calling POST /bidList/validate with {}", bid.toString());
-        
-        if (bid.getBidQuantity() < 0)
-            result.rejectValue("bidQuantity", "error.bidQuantity", "Bid Quantity cannot be negative...");
+
         
         if (result.hasErrors()) {
             model.addAttribute("error", true); 
@@ -134,23 +134,24 @@ public class BidListController {
                              BindingResult result, Model model) throws Exception {
         log.info("Calling POST /bidList/update/{} with {}", id, bidList);
 
-        if (bidList.getBidQuantity() < 0)
-            result.rejectValue("bidQuantity", "error.bidQuantity", "Bid Quantity cannot be negative...");
-        
         if (result.hasErrors()) {
             model.addAttribute("error", true); 
             model.addAttribute("message", result.getAllErrors());
             return "bidList/update";  
         }
         
-        if (bidList.getBidQuantity() > 0 && bidList.getType() != null && bidList.getAccount() != null) { 
-            bidListService.updateBidList(bidList);
-            List<BidList> bids = bidListService.findAllBids();
-            model.addAttribute("bidList", bids);
-            return "redirect:/bidList/list";
-        } else { 
-            throw new Exception("Error in form, can't update Bid.");
+        /* if we modify ID in URL - even if now we do not use the ID passed in URL for updates, might be use it in the future */
+        if (!id.equals(bidList.getId())) {
+        	 model.addAttribute("error", true); 
+             model.addAttribute("message", "You try to update a bid with incompatible ID in the URL");
+             return "bidList/update";
         }
+        
+        bidListService.updateBidList(bidList);
+        List<BidList> bids = bidListService.findAllBids();
+        model.addAttribute("bidList", bids);
+        return "redirect:/bidList/list";
+
     }
 
     /**
@@ -160,6 +161,7 @@ public class BidListController {
      * @param model the model to add attributes to the view
      * @return the view name for the list of bid lists
      */
+    @Transactional
     @GetMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
         log.info("Calling GET /bidList/delete/{}", id);
