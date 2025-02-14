@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.validation.Valid;
@@ -34,7 +35,7 @@ public class UserController {
      * @param model The model to pass data to the view.
      * @return The view with the list of users.
      */
-    @RequestMapping("/user/list")
+    @GetMapping("/user/list")
     public String home(Model model) {
         log.info("Calling GET /user/list");
         model.addAttribute("users", userService.findAll());
@@ -104,7 +105,7 @@ public class UserController {
      * @param model  The model to pass data to the view.
      * @return The list view after updating the user.
      */
-    @PostMapping("/user/update/{id}")
+    @PutMapping("/user/update/{id}")
     public String updateUser(@PathVariable("id") Integer id, @Valid User user,
                              BindingResult result, Model model) {
         log.info("Calling POST /user/update/{} with user: {}", id, user);
@@ -131,7 +132,7 @@ public class UserController {
      * @return The list view after the user is deleted.
      * @throws Exception If an error occurs during deletion.
      */
-    @GetMapping("/user/delete/{id}")
+    @DeleteMapping("/user/delete/{id}")
     public String deleteUser(@PathVariable("id") Integer id, Model model) throws Exception {
         log.info("Calling GET /user/delete/{} with id: {}", id);
 
