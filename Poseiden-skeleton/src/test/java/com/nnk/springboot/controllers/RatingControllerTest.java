@@ -94,7 +94,7 @@ public class RatingControllerTest {
         Rating validRating = new Rating("Fitch", "AAA", "A", 1);
         when(ratingService.findById(1)).thenReturn(validRating);
 
-        mockMvc.perform(put("/rating/update/{id}", 1))
+        mockMvc.perform(get("/rating/update/{id}", 1).with(csrf()))
                 .andExpect(status().isOk())  // Vérifie que la réponse HTTP est 200 OK
                 .andExpect(view().name("rating/update"))  // Vérifie que la vue est "rating/update"
                 .andExpect(model().attribute("rating", validRating));  // Vérifie que l'objet "rating" est présent dans le modèle
@@ -133,8 +133,7 @@ public class RatingControllerTest {
         
         int ratingId = 1;
 
-        mockMvc.perform(delete("/rating/delete/{id}", ratingId))
-                .andExpect(status().is3xxRedirection())  
+        mockMvc.perform(delete("/rating/delete/{id}", ratingId).with(csrf()))
                 .andExpect(redirectedUrl("/rating/list")); 
         
         verify(ratingService, times(1)).deleteRatingById(ratingId);
