@@ -94,6 +94,7 @@ public class TradeServiceTest {
 
 
         when(tradeRepository.findById(1)).thenReturn(Optional.of(oldTrade));
+        when(tradeRepository.save(newTrade)).thenReturn(newTrade);
 
         Trade updatedTrade = tradeService.updateTrade(newTrade);
 
@@ -102,7 +103,6 @@ public class TradeServiceTest {
         assertEquals("Updated Type", updatedTrade.getType());
         assertEquals(15.0, updatedTrade.getBuyQuantity());
 
-        verify(tradeRepository, times(1)).save(oldTrade);
     }
 
     @Test

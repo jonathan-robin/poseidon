@@ -125,7 +125,7 @@ public class RatingServiceTest {
         updatedRating.setOrderNumber(1);
 
         when(ratingRepository.findById(1)).thenReturn(Optional.of(existingRating));
-        when(ratingRepository.save(existingRating)).thenReturn(updatedRating);
+        when(ratingRepository.save(updatedRating)).thenReturn(updatedRating);
 
         // When
         Rating result = ratingService.updateRating(updatedRating);
@@ -135,7 +135,7 @@ public class RatingServiceTest {
         assertEquals("AA", result.getMoodysRating());
         assertEquals("AA", result.getSandPRating());
         assertEquals("AA", result.getFitchRating());
-        verify(ratingRepository, times(1)).save(existingRating);  // Vérifier si save a été appelé une fois
+        verify(ratingRepository, times(1)).save(updatedRating);  // Vérifier si save a été appelé une fois
     }
 
     @Test
@@ -155,7 +155,7 @@ public class RatingServiceTest {
             ratingService.updateRating(updatedRating);
         });
 
-        assertEquals("Can't find current Bid", exception.getMessage());
+        assertEquals("Can't find current rating", exception.getMessage());
     }
 
     @Test

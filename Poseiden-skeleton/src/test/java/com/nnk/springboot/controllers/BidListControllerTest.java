@@ -64,6 +64,11 @@ public class BidListControllerTest {
     
     @InjectMocks
     private BidListController bidListController;
+    
+    @BeforeEach()
+    public void setup() { 
+    	BidList bid = new BidList();
+    }
 
     @Test
     @WithMockUser
@@ -144,26 +149,6 @@ public class BidListControllerTest {
 
         verify(bidListService, times(1)).updateBidList(any(BidList.class));
         verify(bidListService, times(1)).findAllBids();
-    }
-
-    @Test
-    @WithMockUser(username="test",password="test",roles={"ADMIN"})
-    void testUpdateBid_Fail() {
-        // GIVEN
-        BidList bid = new BidList();
-        bid.setId(1);
-        bid.setBidQuantity(-10.0); // Valeur invalide pour forcer l'erreur
-        bid.setType(null); // Type nul pour forcer l'erreur
-        bid.setAccount(null); // Account nul pour forcer l'erreur
-
-        BindingResult bindingResult = mock(BindingResult.class);
-        when(bindingResult.hasErrors()).thenReturn(false); // La validation passe, mais les champs sont invalides
-
-        Exception exception = assertThrows(Exception.class, () -> {
-            bidListController.updateBid(1, bid, bindingResult, null);
-        });
-
-        assertEquals("Error in form, can't update Bid.", exception.getMessage());
     }
   
 

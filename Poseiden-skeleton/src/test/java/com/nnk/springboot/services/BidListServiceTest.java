@@ -99,8 +99,7 @@ class BidListServiceTest {
     @Test
     void testUpdateBidList_Success() throws Exception {
         // Arrange
-        when(bidListRepository.findById(1)).thenReturn(Optional.of(bid1));
-        when(bidListRepository.save(any(BidList.class))).thenReturn(bid1);
+        when(bidListRepository.findById(1)).thenReturn(Optional.of(bid1)); 
 
         // Changer des valeurs pour la mise à jour
         BidList updatedBid = new BidList();
@@ -108,6 +107,8 @@ class BidListServiceTest {
         updatedBid.setAccount("UpdatedAccount");
         updatedBid.setType("UpdatedType");
         updatedBid.setBidQuantity(50.0);
+        
+        when(bidListRepository.save(any(BidList.class))).thenReturn(updatedBid);
 
         // Act
         BidList result = bidListService.updateBidList(updatedBid);

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
@@ -150,6 +151,7 @@ public class RatingController {
      * @param model the model to be passed to the view
      * @return the updated list of ratings
      */
+    @Transactional
     @GetMapping("/rating/delete/{id}")
     public String deleteRating(@PathVariable("id") Integer id, Model model) {
         log.info("Calling GET /rating/delete/{}", id);

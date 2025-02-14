@@ -131,7 +131,7 @@ public class UserController {
      * @return The list view after the user is deleted.
      * @throws Exception If an error occurs during deletion.
      */
-    @DeleteMapping("/user/delete/{id}")
+    @GetMapping("/user/delete/{id}")
     public String deleteUser(@PathVariable("id") Integer id, Model model) throws Exception {
         log.info("Calling GET /user/delete/{} with id: {}", id);
 

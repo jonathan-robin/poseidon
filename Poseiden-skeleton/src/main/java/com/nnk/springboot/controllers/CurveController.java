@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
@@ -161,6 +162,7 @@ public class CurveController {
      * @param model the model to add attributes to the view
      * @return the view name for the list of curve points
      */
+    @Transactional
     @GetMapping("/curvePoint/delete/{id}")
     public String deleteCurvePoint(@PathVariable("id") Integer id, Model model) {
         log.info("Calling GET /curvePoint/delete/{}", id);

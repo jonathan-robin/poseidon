@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
@@ -82,9 +83,6 @@ public class TradeController {
     @PostMapping("/trade/validate")
     public String validate(@Valid Trade trade, BindingResult result, Model model) {
         log.info("call to POST /trade/validate with {}", trade.toString());
-
-        if (trade.getBuyQuantity() < 0)
-            result.rejectValue("buyQuantity", "error.buyQuantity", "buyQuantity cannot be negative...");
         
         if (result.hasErrors()) {
             model.addAttribute("error", true); 
@@ -134,23 +132,17 @@ public class TradeController {
                                BindingResult result, Model model) throws Exception {
         log.info("Calling GET /trade/update/{} with {}", id, trade.toString());
         
-        if (trade.getBuyQuantity() < 0)
-            result.rejectValue("buyQuantity", "error.buyQuantity", "buyQuantity cannot be negative...");
-        
         if (result.hasErrors()) {
             model.addAttribute("error", true); 
             model.addAttribute("message", result.getAllErrors());
             return "trade/update";  
         }
 
-        if (trade.getAccount() != null && trade.getType() != null && trade.getBuyQuantity() != null) {
-            tradeService.updateTrade(trade);
-            List<Trade> trades = tradeService.findAllTrades();
-            model.addAttribute("trades", trades);
-            return "redirect:/trade/list";
-        } else {
-            throw new Exception("Error in form, can't update trade.");
-        }
+
+        tradeService.updateTrade(trade);
+        List<Trade> trades = tradeService.findAllTrades();
+        model.addAttribute("trades", trades);
+        return "redirect:/trade/list";
     }
 
     /**
@@ -160,6 +152,7 @@ public class TradeController {
      * @param model the model to add attributes
      * @return the view name for redirecting to the trade list after deletion
      */
+    @Transactional
     @GetMapping("/trade/delete/{id}")
     public String deleteRating(@PathVariable("id") Integer id, Model model) {
         log.info("Calling GET /trade/delete/{}", id);

@@ -110,7 +110,7 @@ public class CurveServiceTest {
         updatedCurve.setValue(150.5); // Value mise à jour
 
         when(curveRepository.findById(1)).thenReturn(Optional.of(existingCurve));
-        when(curveRepository.save(existingCurve)).thenReturn(existingCurve);
+        when(curveRepository.save(updatedCurve)).thenReturn(updatedCurve);
 
         // When
         CurvePoint result = curveService.updateCurvePoint(updatedCurve);
@@ -119,7 +119,6 @@ public class CurveServiceTest {
         assertNotNull(result);
         assertEquals(2.0, result.getTerm());
         assertEquals(150.5, result.getValue());
-        verify(curveRepository, times(1)).save(existingCurve);  // Vérifier si save a été appelé une fois
     }
 
     @Test

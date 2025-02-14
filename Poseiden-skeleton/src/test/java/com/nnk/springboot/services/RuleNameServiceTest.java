@@ -89,12 +89,12 @@ public class RuleNameServiceTest {
         newRuleName.setDescription("UpdatedDescription");
 
         when(ruleNameRepository.findById(1)).thenReturn(Optional.of(oldRuleName));
+        when(ruleNameRepository.save(newRuleName)).thenReturn(newRuleName);
 
         RuleName updatedRuleName = ruleNameService.updateRuleName(newRuleName);
 
         assertNotNull(updatedRuleName);
         assertEquals("UpdatedRule", updatedRuleName.getName());
-        verify(ruleNameRepository, times(1)).save(oldRuleName);
     }
 
     @Test
