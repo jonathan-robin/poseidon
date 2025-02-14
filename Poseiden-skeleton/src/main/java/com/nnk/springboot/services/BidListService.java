@@ -82,33 +82,12 @@ public class BidListService {
 	 * @since 1.0
 	 */
 	public BidList updateBidList(BidList bidList) throws Exception { 
-		
 		Optional<BidList> optBid = bidListRepository.findById(bidList.getId());
-		Map<String, String> tmpUpdates = new HashMap<>();
-		if (optBid.isPresent()) { 
-			BidList bid = optBid.get();
-
-		    for (Field field : BidList.class.getDeclaredFields()) {
-		        field.setAccessible(true);
-		        try {
-		            Object originalValue = field.get(bid);
-		            Object updatedValue = field.get(bidList);
-
-		            if (!Objects.equals(originalValue, updatedValue)) {
-		            	tmpUpdates.put(field.toString(), updatedValue.toString());
-		                field.set(bid, updatedValue);
-		            }
-		        } catch (IllegalAccessException e) {
-		            e.printStackTrace();
-		        }
-		    }
-		    log.info("Updating Bid id: {} with updates {}", bid.getId(), tmpUpdates);
-		    bidListRepository.save(bid);
-		    return optBid.get();
-		}
-		else 
-			throw new Exception("Can't find current Bid");
 		
+		if (optBid.isEmpty())
+			throw new Exception("Can't find current Bid");
+
+		return bidListRepository.save(bidList);	
 		
 	}
 	
