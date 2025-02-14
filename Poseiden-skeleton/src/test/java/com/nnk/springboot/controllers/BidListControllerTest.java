@@ -19,6 +19,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -82,8 +83,26 @@ public class BidListControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("bidList/add"))
                 .andExpect(model().attributeExists("bid"));
+
     }
 
+    @Test
+    @WithMockUser(username = "testUser", roles = {"USER"})
+    public void testShowUpdateForm_Success() throws Exception {
+        // GIVEN
+        BidList bid = new BidList("Account Test", "Type Test", 10.0);
+        when(bidListService.findById(1)).thenReturn(bid);
+
+        // WHEN & THEN
+        mockMvc.perform(get("/bidList/update/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("bidList/update"))
+                .andExpect(model().attributeExists("bidList"))
+                .andExpect(model().attribute("bidList", bid));
+
+        verify(bidListService, times(1)).findById(1);
+    }
+    
     @Test
     @WithMockUser(username="test",password="test",roles={"ADMIN"})
     void testValidateBid() throws Exception {
@@ -137,6 +156,46 @@ public class BidListControllerTest {
 
         verify(bidListService, times(1)).updateBidList(any(BidList.class));
         verify(bidListService, times(1)).findAllBids();
+    }
+    
+    @Test
+    @WithMockUser(username = "testUser", roles = {"USER"})
+    public void testUpdateBid_ValidationErrors() throws Exception {
+        // GIVEN : A bid with an empty account (should trigger validation error)
+        BidList bid = new BidList("", "Type Test", 10.0);
+
+        // WHEN & THEN
+        mockMvc.perform(put("/bidList/update/1")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", "1")
+                .param("account", "")  // Simule une erreur de validation
+                .param("type", "Type Test")
+                .param("bidQuantity", "10.0").with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("bidList/update"))
+                .andExpect(model().attributeExists("error"))
+                .andExpect(model().attributeExists("message"));
+
+        verify(bidListService, never()).updateBidList(any(BidList.class));
+    }
+
+    @Test
+    @WithMockUser(username = "testUser", roles = {"USER"})
+    public void testUpdateBid_IdMismatch() throws Exception {
+        // WHEN & THEN
+        mockMvc.perform(put("/bidList/update/1")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", "2")  // Incohérence entre ID URL et ID objet
+                .param("account", "Account Test")
+                .param("type", "Type Test")
+                .param("bidQuantity", "10.0").with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("bidList/update"))
+                .andExpect(model().attributeExists("error"))
+                .andExpect(model().attributeExists("message"))
+                .andExpect(model().attribute("message", "You try to update a bid with incompatible ID in the URL"));
+
+        verify(bidListService, never()).updateBidList(any(BidList.class));
     }
   
 
