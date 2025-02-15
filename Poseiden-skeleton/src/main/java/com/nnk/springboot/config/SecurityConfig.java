@@ -38,13 +38,7 @@ public class SecurityConfig {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
-    
-//    @Autowired
-//    private CustomAuthenticationSuccessHandler successHandler;
-//
-//    @Autowired
-//    private CustomLogoutSuccessHandler logoutSuccessHandler;
-// 
+
     /**
      * Bean for AuthenticationManager used for authenticating users.
      * 
@@ -69,7 +63,8 @@ public class SecurityConfig {
      * @return The configured SecurityFilterChain.
      * @throws Exception If there is an error configuring the HTTP security.
      */
-    @Bean
+    @SuppressWarnings("removal")
+	@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     	
         http
