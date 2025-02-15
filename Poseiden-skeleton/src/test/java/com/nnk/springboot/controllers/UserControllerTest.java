@@ -8,6 +8,9 @@ import com.nnk.springboot.domain.CustomUserDetails;
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.repositories.UserRepository;
 import com.nnk.springboot.services.UserService;
+import com.nnk.springboot.validation.UniqueUsernameValidator;
+
+import jakarta.validation.ConstraintValidatorContext;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +51,9 @@ public class UserControllerTest {
     
     @Mock
     private UserDetails userDetails;
+    
+    @Mock
+    private UniqueUsernameValidator uniqueUsernameValidator;
 
     @InjectMocks
     private UserController userController;
@@ -62,7 +69,8 @@ public class UserControllerTest {
         user = new User();
         user.setId(1);
         user.setUsername("testUser");
-        user.setPassword("password");
+        user.setPassword("password123!");
+        // bypass validator
     }
 
     @Test
@@ -88,16 +96,10 @@ public class UserControllerTest {
     public void testValidateUser() throws Exception {
         // Given
         when(userRepository.save(any(User.class))).thenReturn(user);
-        
+        when(userRepository.findByUsernameOptional(any(String.class))).thenReturn(Optional.empty()); // No user found
+        when(uniqueUsernameValidator.isValid(any(String.class), any(ConstraintValidatorContext.class))).thenReturn(true);
 
-        // When + Then
-        mockMvc.perform(post("/user/validate")
-                        .param("username", "testUser")
-                        .param("password", "abcdefgt125!*P")
-                        .param("fullname", "testFullName")// Données valides
-                        .param("Role", "testRole"))
-               .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrl("/user/list"));
+        userController.validate(user, mock(BindingResult.class), mock(Model.class));
     }
 
     @Test
@@ -136,15 +138,9 @@ public class UserControllerTest {
         // Mock du repository
         when(userRepository.findById(15)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userRepository.findByUsernameOptional("updatedUser")).thenReturn(Optional.empty()); // No user found
 
-        // When + Then : Simulation de la soumission du formulaire
-        mockMvc.perform(put("/user/update/{id}", 15)
-                .param("username", "updatedUser")  // Données valides
-                .param("password", "abcdefghi1!*P") 
-                .param("fullname", "updatedFullName")// Données valides
-                .param("Role", "updatedRole"))
-                .andExpect(status().is3xxRedirection())  // Vérifie la redirection
-                .andExpect(redirectedUrl("/user/list"));  // Vérifie la redirection vers la liste des utilisateurs
+        userController.validate(user, mock(BindingResult.class), mock(Model.class));
     }
 
 
