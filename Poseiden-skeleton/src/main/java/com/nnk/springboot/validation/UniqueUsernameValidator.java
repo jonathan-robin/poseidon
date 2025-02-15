@@ -18,13 +18,6 @@ public class UniqueUsernameValidator implements ConstraintValidator<UniqueUserna
 
 	@Autowired
     private UserRepository userRepository;
-//
-//    @Autowired
-//    public UniqueUsernameValidator(UserRepository userRepository) { // Injection par constructeur
-//        this.userRepository = userRepository;
-//    }
-//    
-    
 	
 	@Override
 	public boolean isValid(String username, ConstraintValidatorContext context) {

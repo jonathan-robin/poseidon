@@ -18,16 +18,14 @@ public class SecurityContextController {
      * @return a string representing the logged-in user and their roles, or a message indicating no user is logged in
      */
     @GetMapping("/user")
-    public String getUser() {
+    public void getUser() {
         log.info("Calling GET /user to retrieve the logged-in user");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         
         if (authentication != null && authentication.isAuthenticated()) {
             log.info("User {} is authenticated with roles: {}", authentication.getName(), authentication.getAuthorities());
-            return "Logged-in user: " + authentication.getName() + " role: " + authentication.getAuthorities();
         } else {
             log.info("No user is logged in");
-            return "No user logged in";
         }
     }
 }
