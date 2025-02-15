@@ -1,5 +1,7 @@
 package com.nnk.springboot.domain;
 
+import com.nnk.springboot.validation.UniqueUsername;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -27,6 +29,8 @@ public class User {
      * Mapped to the "username" column in the "users" table.
      */
     @NotBlank(message = "Username is mandatory")
+    @UniqueUsername
+    @Column(name="username")
     private String username;
     
     /**
@@ -35,6 +39,7 @@ public class User {
      * Mapped to the "password" column in the "users" table.
      */
     @NotBlank(message = "Password is mandatory")
+    @Column(name="password")
     private String password;
     
     /**
@@ -43,6 +48,7 @@ public class User {
      * Mapped to the "fullname" column in the "users" table.
      */
     @NotBlank(message = "FullName is mandatory")
+    @Column(name="fullname")
     private String fullname;
     
     /**
@@ -52,6 +58,7 @@ public class User {
      * Mapped to the "role" column in the "users" table.
      */
     @NotBlank(message = "Role is mandatory")
+    @Column(name="role")
     private String role;
 
     /**

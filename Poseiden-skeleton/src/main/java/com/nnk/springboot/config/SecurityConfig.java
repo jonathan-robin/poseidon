@@ -74,8 +74,8 @@ public class SecurityConfig {
     	
         http
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/", "/login", "/app/login", "/app/error", "/user").permitAll()  // Permit all users to access these paths
-                .requestMatchers("/user/*").hasAuthority("ROLE_ADMIN")  // Only allow users with "ROLE_ADMIN" to access user-related pages
+                .requestMatchers("/", "/login", "/app/login", "/app/error", "/user", "/user/list/**", "/user/**").permitAll()  // Permit all users to access these paths
+//                .requestMatchers("/user/*").hasAuthority("ROLE_ADMIN")  // Only allow users with "ROLE_ADMIN" to access user-related pages
                 .anyRequest().authenticated()  // Require authentication for any other request
             )
             .formLogin((formLogin) -> formLogin
@@ -87,7 +87,7 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/")  // Redirect to home page on logout success
                 .invalidateHttpSession(true)  // Invalidate the session on logout
                 .deleteCookies("JSESSIONID")  // Delete the session cookie on logout
-            )
+            ) 
             .exceptionHandling((exceptionHandling) -> exceptionHandling.accessDeniedPage("/app/error"))  // Handle access denied exceptions
             .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)  // Create session only if required
